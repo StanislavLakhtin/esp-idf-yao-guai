@@ -1,6 +1,6 @@
-/* UART 1-wire (OneWire) Free RTOS Example for DS18B20
+/* Free RTOS Yao-Guai Weather meteostation
  *
- * Created by Stanislav Lakhtin on 06.01.2020.
+ * Created by Stanislav Lakhtin on 02.02.2020.
 
    This example code is in the Public Domain (or CC0 licensed, at your option.)
 
