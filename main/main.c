@@ -11,7 +11,15 @@
 #include "yao-guai.h"
 
 void app_main(void) {
-  conf_t* conf = conf_init();
+  wifi_conf_t wifi_conf = {
+      .ap_cnt = 0x00,
+      .ap_info = NULL,
+      .netif = NULL,
+  };
+  conf_t conf = {
+      .wifi = &wifi_conf,
+  };
+  conf_init(&conf);
 
   // Initialize NVS
   esp_err_t ret = nvs_flash_init();
@@ -24,7 +32,7 @@ void app_main(void) {
   ESP_ERROR_CHECK(esp_event_loop_create_default());
 
   ESP_ERROR_CHECK(ow_uart_driver_init());
-  ESP_ERROR_CHECK(wifi_init(conf));
+  ESP_ERROR_CHECK(wifi_init(&conf));
 
   //xTaskCreate(ow_periodically_scan_task, "ow_periodically_scan_task", 2048, NULL, 10, NULL);
   xTaskCreate(main_connection_task, "main_connection_task", 4096, &conf, 10, NULL);

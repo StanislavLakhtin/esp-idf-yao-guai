@@ -2,10 +2,6 @@
 // Created by Stanislav Lakhtin on 06/02/2020.
 //
 
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/event_groups.h"
-
 #include <string.h>
 #include "yao-guai.h"
 
@@ -14,8 +10,6 @@
 #include "esp_netif.h"
 #include "driver/gpio.h"
 
-#include "lwip/err.h"
-#include "lwip/sys.h"
 
 static EventGroupHandle_t s_connect_event_group;
 static esp_ip4_addr_t s_ip_addr;
@@ -112,13 +106,27 @@ esp_err_t wifi_connect( conf_t* conf ) {
   return ESP_OK;
 }*/
 
-esp_err_t wifi_scan( conf_t * conf, bool fast_scan ) {
-  ESP_LOGI( TAG, "Clean previous WiFi scan..." );
-  conf->wifi->ap_cnt = DEFAULT_AP_LIST_SIZE;
-  memset( conf->wifi->ap_info, 0x00, sizeof( conf->wifi->ap_info ));
+esp_err_t wifi_scan( conf_t * conf ) {
+  ESP_LOGI(TAG, "conf->wifi->ap_info: %p", conf->wifi->ap_info);
+  if (conf->wifi->ap_info != NULL) {
+    ESP_LOGI( TAG, "Clean previous WiFi scan");
+    free(conf->wifi->ap_info);
+    conf->wifi->ap_info = NULL;
+    conf->wifi->ap_cnt = 0x00;
+  }
+  uint16_t max_ap = DEFAULT_AP_LIST_SIZE;
+  conf->wifi->ap_info = malloc(sizeof(wifi_ap_record_t) * max_ap);
   ESP_LOGI( TAG, "Scanning WiFi" );
-  ESP_ERROR_CHECK( esp_wifi_scan_start( NULL, true ));
-  ESP_ERROR_CHECK( esp_wifi_scan_get_ap_records( &conf->wifi->ap_cnt, conf->wifi->ap_info ));
+  esp_err_t _r = esp_wifi_scan_start( NULL, true );
+  switch ( _r ) {
+    default:
+    case ESP_OK: break;
+    case ESP_ERR_WIFI_NOT_INIT: ESP_LOGE(TAG, "Esp error: Wifi is not init"); return _r;
+    case ESP_ERR_WIFI_NOT_STARTED: ESP_LOGE(TAG, "Esp error: Wifi is not started"); return _r;
+    case ESP_ERR_WIFI_TIMEOUT: ESP_LOGE(TAG, "Esp error: Wifi timeout"); return _r;
+    case ESP_ERR_WIFI_STATE: ESP_LOGE(TAG, "Unknown wifi error"); return _r;
+  }
+  ESP_ERROR_CHECK( esp_wifi_scan_get_ap_records( &max_ap, conf->wifi->ap_info ));
   ESP_ERROR_CHECK( esp_wifi_scan_get_ap_num( &conf->wifi->ap_cnt ));
   return ESP_OK;
 }

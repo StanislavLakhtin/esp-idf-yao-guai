@@ -17,9 +17,9 @@ static const char* TAG = "wifi_loop";
 
 void main_connection_task(void * arg) {
   conf_t* conf = arg;
+  ESP_ERROR_CHECK( wifi_start_station( conf ));
   loop {
-    ESP_ERROR_CHECK( wifi_start_station( conf ));
-    ESP_ERROR_CHECK(wifi_scan(conf, false));
+    ESP_ERROR_CHECK(wifi_scan(conf));
     ESP_LOGI( TAG, "Total APs scanned = %u", conf->wifi->ap_cnt );
     /*for (int i = 0; i < conf->wifi->ap_cnt; i++) {
       wifi_ap_record_t * ap = &conf->wifi->ap_info[i];

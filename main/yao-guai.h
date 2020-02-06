@@ -31,8 +31,8 @@ typedef struct {
   char ssid[33];
   char ssid_password[65];
   esp_netif_t * netif;
-  uint16_t ap_cnt;
-  wifi_ap_record_t ap_info[DEFAULT_AP_LIST_SIZE];     // определяет, сколько всего может быть просканировано станций
+  uint32_t ap_cnt;
+  wifi_ap_record_t * ap_info;     // определяет, сколько всего может быть просканировано станций
 } wifi_conf_t;
 
 typedef struct {
@@ -59,7 +59,7 @@ extern "C"
 #endif
 
 // --------------- Init ----------------
-conf_t * conf_init();
+void conf_init(conf_t * conf);
 
 // --------------- Tasks ---------------
 void ow_periodically_scan_task(void *arg);
@@ -71,7 +71,7 @@ esp_err_t wifi_init(conf_t *conf_t);
 
 esp_err_t wifi_start_station( conf_t * conf );
 
-esp_err_t wifi_scan(conf_t *conf, bool fast_scan);
+esp_err_t wifi_scan(conf_t *conf);
 
 esp_err_t wifi_connect(conf_t *conf);
 
