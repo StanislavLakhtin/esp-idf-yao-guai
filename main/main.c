@@ -12,15 +12,14 @@
 #include "sdkconfig.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include <esp_log.h>
 #include "yao-guai.h"
-#include "ow_uart_driver/ow_uart_driver.h"
-
-static void init() {
-  ESP_ERROR_CHECK(ow_uart_driver_init());
-}
 
 void app_main(void) {
-  init();
+  conf_t conf;
+  ESP_ERROR_CHECK(ow_uart_driver_init());
+  ESP_ERROR_CHECK(conf_init(&conf));
+  ESP_ERROR_CHECK( nvs_flash_init());
+  ESP_ERROR_CHECK( esp_netif_init());
+  ESP_ERROR_CHECK( esp_event_loop_create_default());
   xTaskCreate(ow_periodically_scan_task, "ow_periodically_scan_task", 2048, NULL, 10, NULL);
 }
