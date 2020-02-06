@@ -25,18 +25,9 @@
 
 #include "ow_uart_driver/ow_uart_driver.h"
 
-#define DEFAULT_AP_LIST_SIZE 10
+#define DEFAULT_AP_LIST_SIZE 22
 
 typedef struct {
-  char ssid[33];
-  char ssid_password[65];
-  esp_netif_t * netif;
-  uint32_t ap_cnt;
-  wifi_ap_record_t * ap_info;     // определяет, сколько всего может быть просканировано станций
-} wifi_conf_t;
-
-typedef struct {
-  wifi_conf_t * wifi;
   SemaphoreHandle_t inUse;
   sdmmc_card_t *sd_card;
 } conf_t;
@@ -67,13 +58,11 @@ void ow_periodically_scan_task(void *arg);
 void main_connection_task(void *arg);
 
 // ---------------- WiFi ----------------
-esp_err_t wifi_init(conf_t *conf_t);
+esp_netif_t * wifi_init(void);
 
-esp_err_t wifi_start_station( conf_t * conf );
+esp_err_t wifi_start_station();
 
-esp_err_t wifi_scan(conf_t *conf);
-
-esp_err_t wifi_connect(conf_t *conf);
+esp_err_t wifi_scan( wifi_ap_record_t * buffer, uint16_t * cnt );
 
 // SD-Card
 esp_err_t sdcard_session_start(conf_t *conf);

@@ -44,21 +44,10 @@ static void on_wifi_scan_finished( void * arg, esp_event_base_t event_base,
   ESP_LOGI( TAG, "Wi-Fi scan complete" );
 }
 
-static void _pre_wifi_config( conf_t * conf, wifi_config_t * wifi_config ) {
-  memset( wifi_config->sta.ssid, 0x00, 32 );
-  memset( wifi_config->sta.password, 0x00, 64 );
-  for ( int i = 0 ; i < strlen( conf->wifi->ssid ) ; i++ ) {
-    wifi_config->sta.ssid[ i ] = conf->wifi->ssid[ i ];
-  }
-  for ( int i = 0 ; i < strlen( conf->wifi->ssid_password ) ; i++ ) {
-    wifi_config->sta.password[ i ] = conf->wifi->ssid_password[ i ];
-  }
-}
-
-esp_err_t wifi_init( conf_t * conf ) {
+esp_netif_t* wifi_init( void ) {
   ESP_LOGI( TAG, "Initializing WiFi" );
-  conf->wifi->netif = esp_netif_create_default_wifi_sta();
-  assert( conf->wifi->netif );
+  esp_netif_t* netif = esp_netif_create_default_wifi_sta();
+  assert( netif );
 
   wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
   ESP_ERROR_CHECK( esp_wifi_init( &cfg ));
@@ -66,17 +55,17 @@ esp_err_t wifi_init( conf_t * conf ) {
   ESP_ERROR_CHECK( esp_event_handler_register( WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &on_wifi_disconnect, NULL ));
   ESP_ERROR_CHECK( esp_event_handler_register( IP_EVENT, IP_EVENT_STA_GOT_IP, &on_got_ip, NULL ));
   ESP_ERROR_CHECK( esp_event_handler_register( WIFI_EVENT, WIFI_EVENT_SCAN_DONE, &on_wifi_scan_finished, NULL ));
-  return ESP_OK;
+  return netif;
 }
 
-esp_err_t wifi_start_station( conf_t * conf ) {
+esp_err_t wifi_start_station() {
   ESP_LOGI(TAG, "Setting station mode...");
   ESP_ERROR_CHECK( esp_wifi_set_mode( WIFI_MODE_STA ));
   ESP_ERROR_CHECK( esp_wifi_start());
   return ESP_OK;
 }
 
-static esp_err_t stop( conf_t * conf ) {
+/*static esp_err_t stop( conf_t * conf ) {
   ESP_ERROR_CHECK( esp_wifi_set_default_wifi_ap_handlers());
 
   esp_err_t err = esp_wifi_stop();
@@ -90,7 +79,7 @@ static esp_err_t stop( conf_t * conf ) {
   return ESP_OK;
 }
 
-/*
+
 esp_err_t wifi_connect( conf_t* conf ) {
   if ( s_connect_event_group != NULL) {
     return ESP_ERR_INVALID_STATE;
@@ -106,16 +95,8 @@ esp_err_t wifi_connect( conf_t* conf ) {
   return ESP_OK;
 }*/
 
-esp_err_t wifi_scan( conf_t * conf ) {
-  ESP_LOGI(TAG, "conf->wifi->ap_info: %p", conf->wifi->ap_info);
-  if (conf->wifi->ap_info != NULL) {
-    ESP_LOGI( TAG, "Clean previous WiFi scan");
-    free(conf->wifi->ap_info);
-    conf->wifi->ap_info = NULL;
-    conf->wifi->ap_cnt = 0x00;
-  }
+esp_err_t wifi_scan( wifi_ap_record_t * buffer, uint16_t * cnt ) {
   uint16_t max_ap = DEFAULT_AP_LIST_SIZE;
-  conf->wifi->ap_info = malloc(sizeof(wifi_ap_record_t) * max_ap);
   ESP_LOGI( TAG, "Scanning WiFi" );
   esp_err_t _r = esp_wifi_scan_start( NULL, true );
   switch ( _r ) {
@@ -126,7 +107,7 @@ esp_err_t wifi_scan( conf_t * conf ) {
     case ESP_ERR_WIFI_TIMEOUT: ESP_LOGE(TAG, "Esp error: Wifi timeout"); return _r;
     case ESP_ERR_WIFI_STATE: ESP_LOGE(TAG, "Unknown wifi error"); return _r;
   }
-  ESP_ERROR_CHECK( esp_wifi_scan_get_ap_records( &max_ap, conf->wifi->ap_info ));
-  ESP_ERROR_CHECK( esp_wifi_scan_get_ap_num( &conf->wifi->ap_cnt ));
+  ESP_ERROR_CHECK( esp_wifi_scan_get_ap_records( &max_ap, buffer ));
+  ESP_ERROR_CHECK( esp_wifi_scan_get_ap_num( cnt ));
   return ESP_OK;
 }
