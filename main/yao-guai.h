@@ -33,7 +33,7 @@ typedef struct {
 } wifi_conf_t;
 
 typedef struct {
-  wifi_conf_t *wifi;
+  wifi_conf_t * wifi;
   SemaphoreHandle_t inUse;
   sdmmc_card_t *sd_card;
 } conf_t;
