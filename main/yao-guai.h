@@ -7,9 +7,10 @@
 #define ESP32_YAO_GUAI_WEATHER_FIRMWARE_YAO_GUAI_H
 
 #include "freertos/FreeRTOS.h"
+#include "freertos/event_groups.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h"
-#include "driver/sdmmc_types.h"
+#include "driver/sdmmc_defs.h"
 
 #include "nvs_flash.h"
 
@@ -20,13 +21,15 @@
 #include "esp_ota_ops.h"
 #include "esp_event.h"
 
+#include <sdmmc_cmd.h>
+
 #include "ow_uart_driver/ow_uart_driver.h"
 
 #define DEFAULT_AP_LIST_SIZE 10
 
 typedef struct {
-  char ssid[32];
-  char ssid_password[64];
+  char ssid[33];
+  char ssid_password[65];
   esp_netif_t * netif;
   uint16_t ap_cnt;
   wifi_ap_record_t ap_info[DEFAULT_AP_LIST_SIZE];     // определяет, сколько всего может быть просканировано станций
@@ -55,6 +58,9 @@ extern "C"
 {
 #endif
 
+// --------------- Init ----------------
+conf_t * conf_init();
+
 // --------------- Tasks ---------------
 void ow_periodically_scan_task(void *arg);
 
@@ -63,13 +69,13 @@ void main_connection_task(void *arg);
 // ---------------- WiFi ----------------
 esp_err_t wifi_init(conf_t *conf_t);
 
+esp_err_t wifi_start_station( conf_t * conf );
+
 esp_err_t wifi_scan(conf_t *conf, bool fast_scan);
 
 esp_err_t wifi_connect(conf_t *conf);
 
 // SD-Card
-esp_err_t conf_init(conf_t *conf);
-
 esp_err_t sdcard_session_start(conf_t *conf);
 
 esp_err_t sdcard_session_finish(conf_t *conf);

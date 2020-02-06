@@ -3,9 +3,7 @@
 //
 
 #include "yao-guai.h"
-#include <esp_log.h>
 #include <esp_vfs_fat.h>
-#include <sdmmc_cmd.h>
 #include "driver/sdspi_host.h"
 
 
@@ -24,13 +22,18 @@ static esp_vfs_fat_sdmmc_mount_config_t mount_config = {
 #define CONF_FILE_PATH MOUNT_POINT "/conf/conn.conf"
 #define SCANNED_AP_PATH MOUNT_POINT "/log/aps.log"
 
-esp_err_t conf_init(conf_t* conf) {
-  conf->inUse = (conf->inUse == NULL) ? xSemaphoreCreateMutex() : conf->inUse;
+static wifi_conf_t wifi_conf;
+static conf_t conf = {
+    .wifi = &wifi_conf,
+};
+
+conf_t * conf_init() {
+  conf.inUse = xSemaphoreCreateMutex();
   slot_config.gpio_miso = PIN_NUM_MISO;
   slot_config.gpio_mosi = PIN_NUM_MOSI;
   slot_config.gpio_sck  = PIN_NUM_CLK;
   slot_config.gpio_cs   = PIN_NUM_CS;
-  return ESP_OK;
+  return &conf;
 }
 
 esp_err_t sdcard_session_start(conf_t* conf) {
