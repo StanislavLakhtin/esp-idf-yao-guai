@@ -22,15 +22,20 @@
 
 #include "ow_uart_driver/ow_uart_driver.h"
 
+#define DEFAULT_AP_LIST_SIZE 10
+
 typedef struct {
   char ssid[32];
   char ssid_password[64];
+  esp_netif_t * netif;
+  uint16_t ap_cnt;
+  wifi_ap_record_t ap_info[DEFAULT_AP_LIST_SIZE];     // определяет, сколько всего может быть просканировано станций
 } wifi_conf_t;
 
 typedef struct {
-  wifi_conf_t* wifi;
+  wifi_conf_t *wifi;
   SemaphoreHandle_t inUse;
-  sdmmc_card_t* sd_card;
+  sdmmc_card_t *sd_card;
 } conf_t;
 
 #define PIN_NUM_MISO 4
@@ -50,16 +55,28 @@ extern "C"
 {
 #endif
 
+// --------------- Tasks ---------------
 void ow_periodically_scan_task(void *arg);
 
-// Init WiFi
-esp_err_t wifi_connect( void );
+void main_connection_task(void *arg);
+
+// ---------------- WiFi ----------------
+esp_err_t wifi_init(conf_t *conf_t);
+
+esp_err_t wifi_scan(conf_t *conf, bool fast_scan);
+
+esp_err_t wifi_connect(conf_t *conf);
+
 // SD-Card
-esp_err_t conf_init(conf_t* conf);
-esp_err_t sdcard_session_start(conf_t* conf);
-esp_err_t sdcard_session_finish(conf_t* conf);
-esp_err_t get_ap_password(conf_t* conf, char* ap_name, char* password_buffer);
-esp_err_t save_scanned_ap(conf_t* conf);
+esp_err_t conf_init(conf_t *conf);
+
+esp_err_t sdcard_session_start(conf_t *conf);
+
+esp_err_t sdcard_session_finish(conf_t *conf);
+
+esp_err_t get_ap_password(conf_t *conf, char *ap_name, char *password_buffer);
+
+esp_err_t save_scanned_ap(conf_t *conf);
 
 #ifdef __cplusplus
 }
