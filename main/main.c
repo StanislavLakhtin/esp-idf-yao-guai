@@ -10,6 +10,10 @@
 */
 #include "yao-guai.h"
 
+/* States:
+ 1.
+*/
+
 void app_main(void) {
   conf_t conf;
   conf_init(&conf);

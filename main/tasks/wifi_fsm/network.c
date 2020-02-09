@@ -2,61 +2,7 @@
 // Created by Stanislav Lakhtin on 06/02/2020.
 //
 
-#include <string.h>
-#include "yao-guai.h"
-
-#include "esp_wifi.h"
-#include "esp_wifi_default.h"
-#include "esp_netif.h"
-#include "driver/gpio.h"
-
-
-static EventGroupHandle_t s_connect_event_group;
-static esp_ip4_addr_t s_ip_addr;
-static const char * s_connection_name;
-
-#define GOT_IPV4_BIT BIT(0)
-#define CONNECTED_BITS (GOT_IPV4_BIT)
-#define TAG "wifi"
-
-// ---------------- Event Listeners ---------------------
-
-static void on_got_ip( void * arg, esp_event_base_t event_base,
-                       int32_t event_id, void * event_data ) {
-  ESP_LOGI( TAG, "Got IP" );
-  ip_event_got_ip_t * event = ( ip_event_got_ip_t * ) event_data;
-  memcpy( &s_ip_addr, &event->ip_info.ip, sizeof( s_ip_addr ));
-  xEventGroupSetBits( s_connect_event_group, GOT_IPV4_BIT);
-}
-
-static void on_wifi_disconnect( void * arg, esp_event_base_t event_base,
-                                int32_t event_id, void * event_data ) {
-  ESP_LOGI( TAG, "Wi-Fi disconnected, trying to reconnect..." );
-  esp_err_t err = esp_wifi_connect();
-  if ( err == ESP_ERR_WIFI_NOT_STARTED) {
-    return;
-  }
-  ESP_ERROR_CHECK( err );
-}
-
-static void on_wifi_scan_finished( void * arg, esp_event_base_t event_base,
-                                   int32_t event_id, void * event_data ) {
-  ESP_LOGI( TAG, "Wi-Fi scan complete" );
-}
-
-esp_netif_t* wifi_init( void ) {
-  ESP_LOGI( TAG, "Initializing WiFi" );
-  esp_netif_t* netif = esp_netif_create_default_wifi_sta();
-  assert( netif );
-
-  wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-  ESP_ERROR_CHECK( esp_wifi_init( &cfg ));
-
-  ESP_ERROR_CHECK( esp_event_handler_register( WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &on_wifi_disconnect, NULL ));
-  ESP_ERROR_CHECK( esp_event_handler_register( IP_EVENT, IP_EVENT_STA_GOT_IP, &on_got_ip, NULL ));
-  ESP_ERROR_CHECK( esp_event_handler_register( WIFI_EVENT, WIFI_EVENT_SCAN_DONE, &on_wifi_scan_finished, NULL ));
-  return netif;
-}
+#include "wifi_fsm.h"
 
 esp_err_t wifi_start_station() {
   ESP_LOGI(TAG, "Setting station mode...");

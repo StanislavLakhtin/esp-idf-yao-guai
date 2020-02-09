@@ -23,7 +23,7 @@
 
 #define ONEWIRE_RESET 0xF0
 
-#define loop while (true)
+#define loop for(;;)
 
 #define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
 #define BYTE_TO_BINARY(byte)  \
