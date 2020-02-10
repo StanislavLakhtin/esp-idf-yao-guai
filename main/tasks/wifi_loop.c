@@ -14,19 +14,6 @@
 // 4. По истечению treshold прервать соединение,
 // 5. выждать несколько секунд и повторить всё вновь
 
-/*
- * struct transition state_transitions[] = {
-    {init, ok,     find_ap},
-    {init, fail,   error},
-    {find_ap, ok,  connect_ap},
-    {connect_ap,   fail,   error},
-    {connect_ap,   ok, process_messages},
-    {error,  ok, init},
-    {process_messages,   fail,   error},
-    {process_messages,   repeat, process_messages},
-    {process_messages, ok, init}};
- */
-
 static const state_fptr_t states_fn[] = { init_state,
                                           find_ap_state,
                                           connect_ap_state,

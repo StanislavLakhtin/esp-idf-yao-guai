@@ -4,38 +4,6 @@
 
 #include "wifi_fsm.h"
 
-static EventGroupHandle_t s_connect_event_group;
-static esp_ip4_addr_t s_ip_addr;
-static const char * s_connection_name;
-
-#define GOT_IPV4_BIT BIT(0)
-#define CONNECTED_BITS (GOT_IPV4_BIT)
-
-// ---------------- Event Listeners ---------------------
-
-static void on_got_ip( void * arg, esp_event_base_t event_base,
-                       int32_t event_id, void * event_data ) {
-  ESP_LOGI( TAG, "Got IP" );
-  ip_event_got_ip_t * event = ( ip_event_got_ip_t * ) event_data;
-  memcpy( &s_ip_addr, &event->ip_info.ip, sizeof( s_ip_addr ));
-  xEventGroupSetBits( s_connect_event_group, GOT_IPV4_BIT);
-}
-
-static void on_wifi_disconnect( void * arg, esp_event_base_t event_base,
-                                int32_t event_id, void * event_data ) {
-  ESP_LOGI( TAG, "Wi-Fi disconnected" );
-/*  esp_err_t err = esp_wifi_connect();
-  if ( err == ESP_ERR_WIFI_NOT_STARTED) {
-    return;
-  }
-  ESP_ERROR_CHECK( err );*/
-}
-
-static void on_wifi_scan_finished( void * arg, esp_event_base_t event_base,
-                                   int32_t event_id, void * event_data ) {
-  ESP_LOGI( TAG, "Wi-Fi scan complete" );
-}
-
 #define TRANSITION_COUNT 9    // всего 9 правил. Следует синхронизировать число с нижеследующей инициализацие правил
 static const struct transition state_transitions[] = {
     {init, WIFI_OK,     find_ap},
@@ -57,24 +25,11 @@ enum states_t lookup_transitions(enum states_t state, enum ret_codes_t code) {
   return UNKNOWN_STATE;
 }
 
-enum ret_codes_t init_state(void ) {
-  ESP_LOGI( TAG, "Initializing WiFi" );
-  ap_cnt = 0x00;
-  ap_info = NULL;
-  netif = esp_netif_create_default_wifi_sta();
-  assert( netif );
-
-  wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-  ESP_ERROR_CHECK( esp_wifi_init( &cfg ));
-
-  ESP_ERROR_CHECK( esp_event_handler_register( WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &on_wifi_disconnect, NULL ));
-  ESP_ERROR_CHECK( esp_event_handler_register( IP_EVENT, IP_EVENT_STA_GOT_IP, &on_got_ip, NULL ));
-  ESP_ERROR_CHECK( esp_event_handler_register( WIFI_EVENT, WIFI_EVENT_SCAN_DONE, &on_wifi_scan_finished, NULL ));
-  ESP_ERROR_CHECK( wifi_start_station());
-  return WIFI_OK;
+enum ret_codes_t init_state( void ) {
+  return (wifi_init() == ESP_OK) ? WIFI_OK : WIFI_FAIL;
 }
 
-enum ret_codes_t find_ap_state(void ) {
+enum ret_codes_t find_ap_state( void ) {
   if (ap_info != NULL) {
     ESP_LOGI( TAG, "Clean previous WiFi scan");
     free(ap_info);
@@ -93,17 +48,18 @@ enum ret_codes_t find_ap_state(void ) {
   return WIFI_OK;
 }
 
-enum ret_codes_t connect_ap_state(void ) {
-  ESP_LOGI( TAG, "Connect to desired Wifi Station" );
+enum ret_codes_t connect_ap_state( void ) {
+  ESP_LOGI( TAG, "Connection to the desired Wifi Station..." );
+
   return WIFI_OK;
 }
 
-enum ret_codes_t process_messages_state(void ) {
+enum ret_codes_t process_messages_state( void ) {
   ESP_LOGI( TAG, "Process messages to MQTT broker" );
   return WIFI_REPEAT;
 }
 
-enum ret_codes_t process_errors(void ) {
+enum ret_codes_t process_errors( void ) {
   ESP_LOGI( TAG, "Errors handling" );
   return WIFI_OK;
 }

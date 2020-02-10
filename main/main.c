@@ -30,6 +30,6 @@ void app_main(void) {
 
   ESP_ERROR_CHECK(ow_uart_driver_init());
 
-  //xTaskCreate(ow_periodically_scan_task, "ow_periodically_scan_task", 2048, NULL, 10, NULL);
+  xTaskCreate(ow_periodically_scan_task, "ow_periodically_scan_task", 2048, NULL, 10, NULL);
   xTaskCreate(main_connection_task, "main_connection_task", 4096, NULL, 10, NULL);
 }

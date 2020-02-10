@@ -35,6 +35,10 @@ struct transition {
 #define ENTRY_STATE init
 #define UNKNOWN_STATE init
 
+EventGroupHandle_t s_connect_event_group;
+esp_ip4_addr_t s_ip_addr;
+char * current_connection_name;
+
 #define IS_SUPPORTED(buffer, flag, descr)  \
   do { \
     if (flag) \
@@ -42,11 +46,18 @@ struct transition {
   } while (0)
 
 static const char* TAG = "wifi";
-char ssid[33];
-char ssid_password[65];
 uint16_t ap_cnt;
 wifi_ap_record_t * ap_info;
 esp_netif_t * netif;
+
+#define GOT_IPV4_BIT BIT(0)   // IPv4
+#define GOT_IPV6_BIT BIT(1)   // IPv6
+
+#ifdef CONFIG_CONNECT_IPV6
+#define CONNECTED_BITS (GOT_IPV4_BIT | GOT_IPV6_BIT)
+#else
+#define CONNECTED_BITS (GOT_IPV4_BIT)
+#endif
 
 #ifdef __cplusplus
 extern "C"
@@ -62,6 +73,20 @@ enum ret_codes_t process_errors(void );
 enum states_t lookup_transitions(enum states_t state, enum ret_codes_t code);
 void get_supported_proto_str(char* buffer, wifi_ap_record_t * ap);
 
+// ---------- wifi sta fns -----------------
+esp_err_t wifi_init();
+esp_err_t wifi_start_station();
+esp_err_t wifi_scan( wifi_ap_record_t * buffer, uint16_t * cnt );
+esp_err_t wifi_connect_to_ap(char* ssid, char* passwd);
+void start(char* ssid, char* passwd);
+static esp_err_t stop( void );
+// ---------- wifi event listeners ----------
+void on_got_ip( void * arg, esp_event_base_t event_base,
+                       int32_t event_id, void * event_data );
+void on_wifi_disconnect( void * arg, esp_event_base_t event_base,
+                                int32_t event_id, void * event_data );
+void on_wifi_scan_finished( void * arg, esp_event_base_t event_base,
+                            int32_t event_id, void * event_data );
 
 #ifdef __cplusplus
 }

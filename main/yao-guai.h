@@ -57,13 +57,6 @@ void ow_periodically_scan_task(void *arg);
 
 void main_connection_task(void *arg);
 
-// ---------------- WiFi ----------------
-esp_netif_t * wifi_init(void);
-
-esp_err_t wifi_start_station();
-
-esp_err_t wifi_scan( wifi_ap_record_t * buffer, uint16_t * cnt );
-
 // SD-Card
 esp_err_t sdcard_session_start(conf_t *conf);
 
