@@ -16,7 +16,7 @@
 
 typedef enum ret_codes_t ( * state_fptr_t ) ( void );
 
-enum states_t {
+enum states_t {         // Внимание! Должно быть синхронизировано с таблицей методов FSM в wifi_task
       init = 0,
       find_ap = 1,
       connect_ap = 2,
@@ -24,7 +24,7 @@ enum states_t {
       error = 4,
 };
 
-enum ret_codes_t { WIFI_OK, WIFI_FAIL, WIFI_REPEAT};
+enum ret_codes_t { FSM_OK, FSM_FAIL, FSM_REPEAT};
 
 struct transition {
   enum states_t src;

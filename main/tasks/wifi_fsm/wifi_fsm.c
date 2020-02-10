@@ -4,17 +4,17 @@
 
 #include "wifi_fsm.h"
 
-#define TRANSITION_COUNT 9    // всего 9 правил. Следует синхронизировать число с нижеследующей инициализацие правил
+#define TRANSITION_COUNT 9    // всего 9 правил. Следует синхронизировать число с нижеследующей инициализацией самих правил
 static const struct transition state_transitions[] = {
-    {init, WIFI_OK,     find_ap},
-    {init, WIFI_FAIL,   error},
-    {find_ap, WIFI_OK,  connect_ap},
-    {connect_ap,   WIFI_FAIL,   error},
-    {connect_ap,   WIFI_OK, process_messages},
-    {error,  WIFI_OK, init},
-    {process_messages,   WIFI_FAIL,   error},
-    {process_messages,   WIFI_REPEAT, process_messages},
-    {process_messages, WIFI_OK, init}};
+    {init,             FSM_OK,     find_ap},
+    {init,             FSM_FAIL,   error},
+    {find_ap,          FSM_OK,     connect_ap},
+    {connect_ap,       FSM_FAIL,   error},
+    {connect_ap,       FSM_OK,     process_messages},
+    {error,            FSM_OK,     init},
+    {process_messages, FSM_FAIL,   error},
+    {process_messages, FSM_REPEAT, process_messages},
+    {process_messages, FSM_OK,     init}};
 
 
 enum states_t lookup_transitions(enum states_t state, enum ret_codes_t code) {
@@ -26,7 +26,7 @@ enum states_t lookup_transitions(enum states_t state, enum ret_codes_t code) {
 }
 
 enum ret_codes_t init_state( void ) {
-  return (wifi_init() == ESP_OK) ? WIFI_OK : WIFI_FAIL;
+  return (wifi_init() == ESP_OK) ? FSM_OK : FSM_FAIL;
 }
 
 enum ret_codes_t find_ap_state( void ) {
@@ -45,23 +45,23 @@ enum ret_codes_t find_ap_state( void ) {
     get_supported_proto_str(_pr, ap);
     ESP_LOGI(TAG, "[%d] %s, (%d dB) %s", i, ap->ssid, ap->rssi, _pr);
   }
-  return WIFI_OK;
+  return FSM_OK;
 }
 
 enum ret_codes_t connect_ap_state( void ) {
   ESP_LOGI( TAG, "Connection to the desired Wifi Station..." );
 
-  return WIFI_OK;
+  return FSM_OK;
 }
 
 enum ret_codes_t process_messages_state( void ) {
   ESP_LOGI( TAG, "Process messages to MQTT broker" );
-  return WIFI_REPEAT;
+  return FSM_REPEAT;
 }
 
 enum ret_codes_t process_errors( void ) {
   ESP_LOGI( TAG, "Errors handling" );
-  return WIFI_OK;
+  return FSM_OK;
 }
 
 void get_supported_proto_str(char* buffer, wifi_ap_record_t * ap) {

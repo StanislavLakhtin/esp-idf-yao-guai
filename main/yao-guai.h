@@ -44,6 +44,13 @@ extern const uint8_t mqtt_eclipse_org_pem_start[]   asm("_binary_mqtt_eclipse_or
 #endif
 extern const uint8_t mqtt_eclipse_org_pem_end[]   asm("_binary_mqtt_eclipse_org_pem_end");
 
+#define LIST_STORED_SSIDs_SIZE 10
+typedef struct {
+  uint8_t ssid[32];
+  uint8_t password[64];
+  uint8_t priority;
+} stored_ssid_conf_t;
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -62,9 +69,8 @@ esp_err_t sdcard_session_start(conf_t *conf);
 
 esp_err_t sdcard_session_finish(conf_t *conf);
 
+esp_err_t is_ssid_conf_exists(conf_t *conf, const char * ssid);
 esp_err_t get_ap_password(conf_t *conf, char *ap_name, char *password_buffer);
-
-esp_err_t save_scanned_ap(conf_t *conf);
 
 #ifdef __cplusplus
 }
