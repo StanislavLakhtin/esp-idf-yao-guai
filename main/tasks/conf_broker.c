@@ -4,7 +4,6 @@
 
 #include "yao-guai.h"
 #include <esp_vfs_fat.h>
-#include <cJSON.h>
 #include "driver/sdspi_host.h"
 
 
@@ -58,40 +57,7 @@ esp_err_t is_ssid_conf_exists(conf_t *conf, const char * ssid) {
   }
   esp_err_t ret = sdcard_session_start(conf);
   if ( !ret ) {
-    FILE* fp = fopen(CONF_FILE_PATH, "r");
-    if (fp == NULL) {
-      ESP_LOGE(TAG, "Failed to open wifi STA conf file for reading");
-      return ESP_ERR_NOT_FOUND;
-    }
-    fseek(fp, 0L, SEEK_END);
-    uint32_t sz = ftell(fp);
-    rewind(fp);
-    char * buffer = malloc(sz);
-    fread(buffer, sz, 1, fp);
-    cJSON * root = cJSON_Parse(buffer);
-    if (root == NULL) {
-      const char *error_ptr = cJSON_GetErrorPtr();
-      if (error_ptr != NULL) {
-        ESP_LOGE(TAG, "Error before: %s\n", error_ptr);
-      }
-    } else {
-      const cJSON * list_of_ap = cJSON_GetObjectItemCaseSensitive(root, SSID_LIST_NAME);
-      if (cJSON_IsArray(list_of_ap)) {
-        uint32_t ap_sz = cJSON_GetArraySize(list_of_ap);
-        for (int i = 0; i<ap_sz; i++) {
-          const cJSON * ssid_element = cJSON_GetArrayItem(list_of_ap, i);
-          /*ESP_LOGE(TAG, "Checking AP \"%s\"\n", ssid_element->valuestring);
-          const cJSON * password = cJSON_GetObjectItemCaseSensitive(root, SSID_PASSWORD_NAME);
-          if (cJSON_IsString(password) && (password->valuestring != NULL)) {
-
-          }*/
-          if (cJSON_IsString(ssid_element) && (ssid_element->valueString != NULL)) {
-
-          }
-        }
-      }
-    }
-    free(buffer);
+    // todo
   } else {
     ESP_LOGE(TAG, "SD-Card error: %d", ret);
   }
