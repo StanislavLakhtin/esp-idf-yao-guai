@@ -66,7 +66,7 @@ esp_err_t wifi_connect_to_ap(char* ssid, char* passwd) {
   }
   s_connect_event_group = xEventGroupCreate();
   start(ssid, passwd);
-  ESP_ERROR_CHECK(esp_register_shutdown_handler(&stop));
+  ESP_ERROR_CHECK(esp_register_shutdown_handler(stop));
   ESP_LOGI(TAG, "Waiting for IP");
   xEventGroupWaitBits(s_connect_event_group, CONNECTED_BITS, true, true, portMAX_DELAY);
   ESP_LOGI(TAG, "Connected to %s", current_connection_name);
@@ -99,18 +99,17 @@ void start(char* ssid, char* passwd) {
   strncpy(current_connection_name, (char*) wifi_config.sta.ssid, 32);
 }
 
-static esp_err_t stop( void ) {
+static void stop( void ) {
   ESP_ERROR_CHECK( esp_wifi_set_default_wifi_ap_handlers());
 
   esp_err_t err = esp_wifi_stop();
   if ( err == ESP_ERR_WIFI_NOT_INIT) {
-    return ESP_ERR_ESP_NETIF_INVALID_PARAMS;
+    return;
   }
   ESP_ERROR_CHECK( err );
   ESP_ERROR_CHECK( esp_wifi_deinit());
   ESP_ERROR_CHECK( esp_wifi_clear_default_wifi_driver_and_handlers( netif ));
   esp_netif_destroy( netif );
-  return ESP_OK;
 }
 
 esp_err_t wifi_scan( wifi_ap_record_t * buffer, uint16_t * cnt ) {

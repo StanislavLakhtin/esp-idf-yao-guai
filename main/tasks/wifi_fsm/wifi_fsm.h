@@ -79,7 +79,7 @@ esp_err_t wifi_start_station();
 esp_err_t wifi_scan( wifi_ap_record_t * buffer, uint16_t * cnt );
 esp_err_t wifi_connect_to_ap(char* ssid, char* passwd);
 void start(char* ssid, char* passwd);
-static esp_err_t stop( void );
+static void stop( void );
 // ---------- wifi event listeners ----------
 void on_got_ip( void * arg, esp_event_base_t event_base,
                        int32_t event_id, void * event_data );

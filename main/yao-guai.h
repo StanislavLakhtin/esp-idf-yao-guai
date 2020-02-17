@@ -44,6 +44,8 @@ extern const uint8_t mqtt_eclipse_org_pem_start[]   asm("_binary_mqtt_eclipse_or
 #endif
 extern const uint8_t mqtt_eclipse_org_pem_end[]   asm("_binary_mqtt_eclipse_org_pem_end");
 
+typedef struct stat filestat;
+
 #define LIST_STORED_SSIDs_SIZE 10
 typedef struct {
   uint8_t ssid[32];
