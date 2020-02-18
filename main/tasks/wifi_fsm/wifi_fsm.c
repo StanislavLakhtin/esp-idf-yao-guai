@@ -5,7 +5,7 @@
 #include "wifi_fsm.h"
 
 #define TRANSITION_COUNT 9    // всего 9 правил. Следует синхронизировать число с нижеследующей инициализацией самих правил
-static const struct transition state_transitions[] = {
+static const transition_t state_transitions[] = {
     {init,             FSM_OK,     find_ap},
     {init,             FSM_FAIL,   error},
     {find_ap,          FSM_OK,     connect_ap},

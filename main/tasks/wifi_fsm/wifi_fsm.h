@@ -26,11 +26,11 @@ enum states_t {         // Внимание! Должно быть синхро�
 
 enum ret_codes_t { FSM_OK, FSM_FAIL, FSM_REPEAT};
 
-struct transition {
+typedef struct {
   enum states_t src;
   enum ret_codes_t ret_codes;
   enum states_t dst;
-};
+} transition_t;
 
 #define ENTRY_STATE init
 #define UNKNOWN_STATE init
