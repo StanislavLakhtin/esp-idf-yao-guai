@@ -45,6 +45,12 @@ typedef struct {
 #define GPIO_INPUT_PIN_SEL      ((1ULL<<GPIO_INPUT_ENCODER_0) | (1ULL<<GPIO_INPUT_ENCODER_1) | (1ULL<<GPIO_INPUT_ENCODER_BTN))
 
 xQueueHandle kbrd_evnt_queue;
+volatile TickType_t l_update_ts[3];
+#define ENCODER_0     0x00
+#define ENCODER_1     0x01
+#define ENCODER_BTN   0x02
+#define ENCODER_RT_THRESHOLD 20
+
 
 #if CONFIG_BROKER_CERTIFICATE_OVERRIDDEN == 1
 static const uint8_t mqtt_eclipse_org_pem_start[]  = "-----BEGIN CERTIFICATE-----\n" CONFIG_BROKER_CERTIFICATE_OVERRIDE "\n-----END CERTIFICATE-----";

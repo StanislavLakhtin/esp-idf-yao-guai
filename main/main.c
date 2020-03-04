@@ -14,8 +14,15 @@
 
 static void IRAM_ATTR gpio_isr_handler(void* arg)
 {
-  uint32_t gpio_num = (uint32_t) arg;
-  xQueueSendFromISR(kbrd_evnt_queue, &gpio_num, NULL);
+  uint32_t btn_id = (uint32_t) arg;
+  TickType_t tick = xTaskGetTickCountFromISR();
+  if (btn_id < 2) {
+    //encoder
+    if (tick - l_update_ts[btn_id] > ENCODER_RT_THRESHOLD) {
+      l_update_ts[btn_id] = tick;
+    }
+    xQueueSendFromISR(kbrd_evnt_queue, &btn_id, NULL);
+  }
 }
 
 static void gpio_task(void* arg)
@@ -42,12 +49,10 @@ void app_main(void) {
   conf_t conf;
   conf_init(&conf);
 
-  //install gpio isr service
   gpio_install_isr_service(ESP_INTR_FLAG_DEFAULT);
-  //hook isr handler for specific gpio pin
-  gpio_isr_handler_add(GPIO_INPUT_ENCODER_0, gpio_isr_handler, (void*) GPIO_INPUT_ENCODER_0);
-  //hook isr handler for specific gpio pin
-  gpio_isr_handler_add(GPIO_INPUT_ENCODER_1, gpio_isr_handler, (void*) GPIO_INPUT_ENCODER_1);
+  gpio_isr_handler_add(GPIO_INPUT_ENCODER_0, gpio_isr_handler, (void*) ENCODER_0);
+  gpio_isr_handler_add(GPIO_INPUT_ENCODER_1, gpio_isr_handler, (void*) ENCODER_1);
+  gpio_isr_handler_add(GPIO_INPUT_ENCODER_BTN, gpio_isr_handler, (void*) ENCODER_BTN);
 
   // Initialize NVS
   esp_err_t ret = nvs_flash_init();
