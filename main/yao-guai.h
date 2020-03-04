@@ -11,6 +11,7 @@
 #include "freertos/task.h"
 #include "freertos/semphr.h"
 #include "driver/sdmmc_defs.h"
+#include "driver/gpio.h"
 
 #include "nvs_flash.h"
 
@@ -36,6 +37,14 @@ typedef struct {
 #define PIN_NUM_MOSI 15
 #define PIN_NUM_CLK  14
 #define PIN_NUM_CS   13
+
+
+#define GPIO_INPUT_ENCODER_0    35
+#define GPIO_INPUT_ENCODER_1    33
+#define GPIO_INPUT_ENCODER_BTN  34
+#define GPIO_INPUT_PIN_SEL      ((1ULL<<GPIO_INPUT_ENCODER_0) | (1ULL<<GPIO_INPUT_ENCODER_1) | (1ULL<<GPIO_INPUT_ENCODER_BTN))
+
+xQueueHandle kbrd_evnt_queue;
 
 #if CONFIG_BROKER_CERTIFICATE_OVERRIDDEN == 1
 static const uint8_t mqtt_eclipse_org_pem_start[]  = "-----BEGIN CERTIFICATE-----\n" CONFIG_BROKER_CERTIFICATE_OVERRIDE "\n-----END CERTIFICATE-----";
