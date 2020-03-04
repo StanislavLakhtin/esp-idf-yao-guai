@@ -47,6 +47,9 @@ esp_err_t wifi_init() {
   ESP_LOGI( TAG, "Initializing WiFi" );
   ap_cnt = 0x00;
   ap_info = NULL;
+  if (netif != NULL) {
+    esp_netif_destroy(netif);
+  }
   netif = esp_netif_create_default_wifi_sta();
   assert( netif );
 

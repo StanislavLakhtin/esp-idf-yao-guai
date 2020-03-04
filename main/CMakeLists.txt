@@ -3,5 +3,6 @@ idf_component_register( SRC_DIRS "."
                                  "./ow_uart_driver"
                                  "./tasks"
                                  "./tasks/wifi_fsm"
-                                 "./edJSON"
+                                 "./lcd"
+                                 "./lcd_spi_driver"
                         INCLUDE_DIRS ".")

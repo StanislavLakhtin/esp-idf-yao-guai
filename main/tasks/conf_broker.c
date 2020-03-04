@@ -5,8 +5,6 @@
 #include "yao-guai.h"
 #include <esp_vfs_fat.h>
 #include "driver/sdspi_host.h"
-#include "cbor.h"
-
 
 #define WAIT_TRESHOLD 1000
 
@@ -58,31 +56,6 @@ static esp_err_t make_sysfolders_if_necessary() {
   return ESP_OK;
 }
 
-
-esp_err_t simple_parse(uint8_t * buffer, size_t size) {
-  // We should read the ENTIRE file into memory. Phhh. It's full of shit as for me.
-  CborValue it;
-  CborParser parser;
-  CborError err = cbor_parser_init(buffer, size, 0x00, &parser, &it);
-  if (err) {
-    ESP_LOGE(TAG, "Can't parse CBOR conf file at offset %d: %s", (int)(it.ptr - buffer), cbor_error_string(err));
-    return ESP_ERR_NOT_SUPPORTED;
-  }
-  if (!cbor_value_at_end(&it)) {
-    CborType type = cbor_value_get_type(&it);
-    if ( type != CborArrayType ) {
-      ESP_LOGE(TAG, "Wrong conf structure at offset %d: %s", (int)(it.ptr - buffer), cbor_error_string(err));
-      return ESP_ERR_NOT_SUPPORTED;
-    }
-    assert(cbor_value_is_container(&it));
-    CborValue iterable;
-    err = cbor_value_enter_container(&it, &iterable);
-    // todo make some necessary
-    err = cbor_value_leave_container(&it, &iterable);
-  }
-  return ESP_OK;
-}
-
 esp_err_t is_ssid_conf_exists(conf_t *conf, const char * ssid) {
   if (xSemaphoreTake(conf->inUse, (TickType_t) WAIT_TRESHOLD) != pdTRUE) {
     return ESP_ERR_INVALID_STATE;
@@ -107,7 +80,6 @@ esp_err_t is_ssid_conf_exists(conf_t *conf, const char * ssid) {
     }
     size_t size = fread(buffer, _st.st_size, 1, fp);
     fclose(fp);
-    err = simple_parse(buffer, size);
     if (err) {
       free(buffer);
     }
