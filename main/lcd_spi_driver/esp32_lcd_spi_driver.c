@@ -1,6 +1,6 @@
 /*  Created by Stanislav Lakhtin on 08.01.2020.
 
-    Yao GUAI Example
+    Yao GUAI ESP32 esp-idf SPI driver for Yao-GUAI GFX library
 
     This example code is in the Public Domain (or CC0 licensed, at your option.)
 
@@ -71,8 +71,6 @@ esp_err_t spi_write_lcd_cmnd(const uint8_t cmnd) {
   };
   ESP_LOGD(TAG, "try to send SPI tx cmnd: %02x", cmnd);
   return spi_device_polling_transmit(spi, &_tx);
-  //return spi_device_transmit(spi, &_tx);
-  //return spi_device_queue_trans(spi, &_tx, portMAX_DELAY);
 }
 
 esp_err_t spi_write_lcd_data(const uint8_t *data, size_t data_length) {
@@ -85,8 +83,6 @@ esp_err_t spi_write_lcd_data(const uint8_t *data, size_t data_length) {
   };
   ESP_LOGD(TAG, "try to send SPI tx data length %d", data_length);
   return spi_device_polling_transmit(spi, &_tx);
-  //return spi_device_queue_trans(spi, &_tx, portMAX_DELAY);
-  //return spi_device_transmit(spi, &_tx);
 }
 
 esp_err_t display_set_backlight(bool val) {

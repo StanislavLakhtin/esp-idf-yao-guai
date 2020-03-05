@@ -1,6 +1,6 @@
 /*  Created by Stanislav Lakhtin on 06.01.2020.
 
-    Yao GUAI Example
+    Yao GUAI ESP32 esp-idf SPI driver for Yao-GUAI GFX library
 
     This example code is in the Public Domain (or CC0 licensed, at your option.)
 
