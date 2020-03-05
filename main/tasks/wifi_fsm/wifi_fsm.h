@@ -6,25 +6,15 @@
 #ifndef ESP32_YAO_GUAI_WEATHER_FIRMWARE_WIFI_FSM_H
 #define ESP32_YAO_GUAI_WEATHER_FIRMWARE_WIFI_FSM_H
 
-#include "yao-guai.h"
-#include <string.h>
+#include "../fsm.h"
 
-#include "esp_wifi.h"
-#include "esp_wifi_default.h"
-#include "esp_netif.h"
-#include "driver/gpio.h"
-
-typedef enum ret_codes_t ( * state_fptr_t ) ( void );
-
-enum states_t {         // Внимание! Должно быть синхронизировано с таблицей методов FSM в wifi_task
+enum states_t {         // Внимание! Должно быть синхронизировано с таблицей методов FSM в wifi loop task
       init = 0,
       find_ap = 1,
       connect_ap = 2,
       process_messages = 3,
       error = 4,
 };
-
-enum ret_codes_t { FSM_OK, FSM_FAIL, FSM_REPEAT};
 
 typedef struct {
   enum states_t src;
