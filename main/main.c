@@ -50,12 +50,15 @@ void IRAM_ATTR encoder_isr_handler(void* arg) {
 void IRAM_ATTR buttons_isr_handler(void* arg) {
   button_t * button = arg;
   int gpio = gpio_get_level(button->pin);
+  TickType_t tick;
   switch (button->state) {
     case BTN_IDLE:
-      if (!gpio) {
+      tick = xTaskGetTickCountFromISR();
+      if (!gpio && (tick - button->last_update > BUTTON_PRESS_THRESHOLD) ) {
         btns_event_t event = button->on_press_event;
         xQueueSendFromISR(kbrd_evnt_queue, &event, NULL);
         button->state = BTN_ON_PRESS;
+        button->last_update = tick;
       }
       break;
     case BTN_ON_PRESS:

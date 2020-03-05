@@ -45,8 +45,9 @@ typedef struct {
   button_state_t state;
   btns_event_t on_press_event;
   btns_event_t on_release_event;
+  TickType_t last_update;
 } button_t;
 
-
+#define BUTTON_PRESS_THRESHOLD 10
 
 #endif //ESP32_YAO_GUAI_WEATHER_FIRMWARE_YAO_GUAI_BTNS_H
