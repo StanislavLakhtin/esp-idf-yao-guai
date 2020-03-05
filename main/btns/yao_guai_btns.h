@@ -12,11 +12,23 @@
 #include "driver/sdmmc_defs.h"
 #include "driver/gpio.h"
 
+typedef enum {
+  rotate_left_begin,
+  rotate_right_begin,
+  rotate_finish,
+  dormancy
+} encoder_state_t;
 
-volatile TickType_t l_update_ts[3];
-#define ENCODER_0     0x00
-#define ENCODER_1     0x01
-#define ENCODER_BTN   0x02
-#define ENCODER_RT_THRESHOLD 12
+typedef struct {
+  gpio_num_t l_pin;
+  gpio_num_t r_pin;
+  encoder_state_t state;
+  TickType_t last_update;
+} encoder_t;
+
+typedef enum {
+  ENCODER0_ROTATE_LEFT = '<',
+  ENCODER0_ROTATE_RIGHT = '>'
+}btns_event_t;
 
 #endif //ESP32_YAO_GUAI_WEATHER_FIRMWARE_YAO_GUAI_BTNS_H

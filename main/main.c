@@ -12,22 +12,46 @@
 #include "btns/yao_guai_btns.h"
 
 void IRAM_ATTR gpio_isr_handler(void* arg) {
-  uint32_t btn_id = (uint32_t) arg;
-  TickType_t tick = xTaskGetTickCountFromISR();
-  if (btn_id < 2) {
-    //encoder
-    if (tick - l_update_ts[btn_id] > ENCODER_RT_THRESHOLD) {
-      l_update_ts[btn_id] = tick;
-      xQueueSendFromISR(kbrd_evnt_queue, &btn_id, NULL);
-    }
+  encoder_t * encoder = arg;
+  //TickType_t tick = xTaskGetTickCountFromISR();
+  int l_pin, r_pin;
+  l_pin = gpio_get_level(encoder->l_pin);
+  r_pin = gpio_get_level(encoder->r_pin);
+  switch (encoder->state) {
+    case dormancy:
+      if (r_pin && !l_pin) {
+        encoder->state = rotate_left_begin;
+      } else if (!r_pin && l_pin) {
+        encoder->state = rotate_right_begin;
+      }
+      break;
+    case rotate_left_begin:
+      if (!r_pin) {
+        btns_event_t event = ENCODER0_ROTATE_LEFT;
+        xQueueSendFromISR(kbrd_evnt_queue, &event, NULL);
+        encoder->state = rotate_finish;
+      }
+      break;
+    case rotate_right_begin:
+      if (!l_pin) {
+        btns_event_t event = ENCODER0_ROTATE_RIGHT;
+        xQueueSendFromISR(kbrd_evnt_queue, &event, NULL);
+        encoder->state = rotate_finish;
+      }
+      break;
+    case rotate_finish:
+      if (r_pin && l_pin) {
+        encoder->state = dormancy;
+      }
+      break;
   }
 }
 
 static void gpio_task(void* arg) {
-  uint32_t io_num;
+  btns_event_t event;
   for(;;) {
-    if(xQueueReceive(kbrd_evnt_queue, &io_num, portMAX_DELAY)) {
-      printf("[ %d ]", io_num);
+    if(xQueueReceive(kbrd_evnt_queue, &event, portMAX_DELAY)) {
+      printf("[ %c ]", event);
     }
   }
 }

@@ -44,10 +44,14 @@ void conf_init(conf_t * conf) {
   gpio_conf.pull_up_en = 1;
   gpio_config(&gpio_conf);
 
+  encoder0.l_pin = GPIO_INPUT_ENCODER_0;
+  encoder0.r_pin = GPIO_INPUT_ENCODER_1;
+  encoder0.state = dormancy;
+
   gpio_install_isr_service(ESP_INTR_FLAG_DEFAULT);
-  gpio_isr_handler_add(GPIO_INPUT_ENCODER_0, gpio_isr_handler, (void*) ENCODER_0);
-  gpio_isr_handler_add(GPIO_INPUT_ENCODER_1, gpio_isr_handler, (void*) ENCODER_1);
-  gpio_isr_handler_add(GPIO_INPUT_ENCODER_BTN, gpio_isr_handler, (void*) ENCODER_BTN);
+  gpio_isr_handler_add(encoder0.l_pin, gpio_isr_handler, &encoder0);
+  gpio_isr_handler_add(encoder0.r_pin, gpio_isr_handler, &encoder0);
+  //gpio_isr_handler_add(GPIO_INPUT_ENCODER_BTN, gpio_isr_handler, (void*) ENCODER_BTN);
 }
 
 esp_err_t sdcard_session_start(conf_t* conf) {

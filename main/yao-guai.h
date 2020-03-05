@@ -26,7 +26,6 @@
 #include <sdmmc_cmd.h>
 
 #include "ow_uart_driver/ow_uart_driver.h"
-#include "btns/yao_guai_btns.h"
 
 #define DEFAULT_AP_LIST_SIZE 22
 
@@ -34,7 +33,6 @@ typedef struct {
   SemaphoreHandle_t inUse;
   sdmmc_card_t *sd_card;
 } conf_t;
-
 
 xQueueHandle kbrd_evnt_queue;
 
