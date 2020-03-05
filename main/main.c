@@ -11,7 +11,7 @@
 #include "yao-guai.h"
 #include "btns/yao_guai_btns.h"
 
-void IRAM_ATTR gpio_isr_handler(void* arg) {
+void IRAM_ATTR encoder_isr_handler(void* arg) {
   encoder_t * encoder = arg;
   //TickType_t tick = xTaskGetTickCountFromISR();
   int l_pin, r_pin;
@@ -42,6 +42,27 @@ void IRAM_ATTR gpio_isr_handler(void* arg) {
     case rotate_finish:
       if (r_pin && l_pin) {
         encoder->state = dormancy;
+      }
+      break;
+  }
+}
+
+void IRAM_ATTR buttons_isr_handler(void* arg) {
+  button_t * button = arg;
+  int gpio = gpio_get_level(button->pin);
+  switch (button->state) {
+    case BTN_IDLE:
+      if (!gpio) {
+        btns_event_t event = button->on_press_event;
+        xQueueSendFromISR(kbrd_evnt_queue, &event, NULL);
+        button->state = BTN_ON_PRESS;
+      }
+      break;
+    case BTN_ON_PRESS:
+      if (gpio) {
+        btns_event_t event = button->on_release_event;
+        xQueueSendFromISR(kbrd_evnt_queue, &event, NULL);
+        button->state = BTN_IDLE;
       }
       break;
   }

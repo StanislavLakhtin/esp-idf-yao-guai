@@ -72,7 +72,8 @@ esp_err_t is_ssid_conf_exists(conf_t *conf, const char * ssid);
 esp_err_t get_ap_password(conf_t *conf, char *ap_name, char *password_buffer);
 
 //Buttons
-void IRAM_ATTR gpio_isr_handler(void* arg);
+void IRAM_ATTR encoder_isr_handler(void* arg);
+void IRAM_ATTR buttons_isr_handler(void* arg);
 
 #ifdef __cplusplus
 }

@@ -70,5 +70,6 @@
 #define ESP_INTR_FLAG_DEFAULT 0
 
 encoder_t encoder0;
+button_t encoder_btn;
 
 #endif //ESP32_YAO_GUAI_WEATHER_FIRMWARE_PERIPHERIALS_H
