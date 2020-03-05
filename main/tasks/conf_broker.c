@@ -30,10 +30,24 @@ static esp_vfs_fat_sdmmc_mount_config_t mount_config = {
 
 void conf_init(conf_t * conf) {
   conf->inUse = xSemaphoreCreateMutex();
-  slot_config.gpio_miso = PIN_NUM_MISO;
-  slot_config.gpio_mosi = PIN_NUM_MOSI;
-  slot_config.gpio_sck  = PIN_NUM_CLK;
-  slot_config.gpio_cs   = PIN_NUM_CS;
+  slot_config.gpio_miso = SPI_MISO;
+  slot_config.gpio_mosi = SPI_MOSI;
+  slot_config.gpio_sck  = SPI_SCLK;
+  slot_config.gpio_cs   = SPI_SDCARD_CS;
+
+  kbrd_evnt_queue = xQueueCreate(10, sizeof(uint32_t));
+
+  gpio_config_t gpio_conf;
+  gpio_conf.intr_type = GPIO_INTR_ANYEDGE;
+  gpio_conf.pin_bit_mask = GPIO_INPUT_PIN_SEL;
+  gpio_conf.mode = GPIO_MODE_INPUT;
+  gpio_conf.pull_up_en = 1;
+  gpio_config(&gpio_conf);
+
+  gpio_install_isr_service(ESP_INTR_FLAG_DEFAULT);
+  gpio_isr_handler_add(GPIO_INPUT_ENCODER_0, gpio_isr_handler, (void*) ENCODER_0);
+  gpio_isr_handler_add(GPIO_INPUT_ENCODER_1, gpio_isr_handler, (void*) ENCODER_1);
+  gpio_isr_handler_add(GPIO_INPUT_ENCODER_BTN, gpio_isr_handler, (void*) ENCODER_BTN);
 }
 
 esp_err_t sdcard_session_start(conf_t* conf) {

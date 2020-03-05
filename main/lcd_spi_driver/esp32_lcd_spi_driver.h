@@ -21,44 +21,8 @@
 #include "driver/spi_master.h"
 #include "driver/gpio.h"
 #include "esp_log.h"
-
+#include "peripherials.h"
 #include "lcd/lcd_driver.h"
-
-#ifdef CONFIG_IDF_TARGET_ESP32
-#define CHIP_NAME "ESP32"
-#endif
-
-#ifndef LCD_DMA_CHAN
-#define LCD_DMA_CHAN 2
-#endif
-
-#ifndef GPIO_MOSI
-#define GPIO_MOSI 23
-#endif
-
-#ifndef GPIO_SCLK
-#define GPIO_SCLK 18
-#endif
-
-#ifndef GPIO_CS
-#define GPIO_CS 5
-#endif
-
-#ifndef GPIO_DC
-#define GPIO_DC 16
-#endif
-
-#ifndef GPIO_RESET
-#define GPIO_RESET 21
-#endif
-
-#ifndef GPIO_BL
-#define GPIO_BL 4
-#endif
-
-#ifndef LCD_TRANSACTION_COUNT
-#define LCD_TRANSACTION_COUNT 6
-#endif
 
 #ifdef __cplusplus
 extern "C"

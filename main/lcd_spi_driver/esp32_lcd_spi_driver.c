@@ -20,37 +20,37 @@ spi_device_handle_t spi;
 //set the D/C line to the value indicated in the user field.
 void display_spi_pre_transfer_callback(spi_transaction_t *t) {
   int dc = (int) t->user;
-  gpio_set_level(GPIO_DC, dc);
+  gpio_set_level(SPI_DC, dc);
 }
 
 void display_spi_post_transfer_callback(spi_transaction_t *t) {
-  gpio_set_level(GPIO_DC, 1);
+  gpio_set_level(SPI_DC, 1);
 }
 
 esp_err_t spi_master_lcd_init(void) {
   ESP_LOGI(TAG, "Initialization of SPI\n");
   //Initialize non-SPI GPIOs
-  ESP_ERROR_CHECK_WITH_INTERRUPT(gpio_set_direction(GPIO_CS, GPIO_MODE_OUTPUT));
-  ESP_ERROR_CHECK_WITH_INTERRUPT(gpio_set_direction(GPIO_DC, GPIO_MODE_OUTPUT));
-  ESP_ERROR_CHECK_WITH_INTERRUPT(gpio_set_direction(GPIO_RESET, GPIO_MODE_OUTPUT));
-  ESP_ERROR_CHECK_WITH_INTERRUPT(gpio_set_direction(GPIO_BL, GPIO_MODE_OUTPUT));
+  ESP_ERROR_CHECK_WITH_INTERRUPT(gpio_set_direction(SPI_LCD_CS, GPIO_MODE_OUTPUT));
+  ESP_ERROR_CHECK_WITH_INTERRUPT(gpio_set_direction(SPI_DC, GPIO_MODE_OUTPUT));
+  ESP_ERROR_CHECK_WITH_INTERRUPT(gpio_set_direction(SPI_LCD_RESET, GPIO_MODE_OUTPUT));
+  ESP_ERROR_CHECK_WITH_INTERRUPT(gpio_set_direction(LCD_BL, GPIO_MODE_OUTPUT));
   // Reset routine
-  ESP_ERROR_CHECK_WITH_INTERRUPT(gpio_set_level(GPIO_RESET, 0));
+  ESP_ERROR_CHECK_WITH_INTERRUPT(gpio_set_level(SPI_LCD_RESET, 0));
   delayMs(150);
-  ESP_ERROR_CHECK_WITH_INTERRUPT(gpio_set_level(GPIO_RESET, 1));
+  ESP_ERROR_CHECK_WITH_INTERRUPT(gpio_set_level(SPI_LCD_RESET, 1));
   delayMs(120);
   // Initializing SPI
   spi_bus_config_t _cfg = {
-      .mosi_io_num = GPIO_MOSI,       //< GPIO pin for Master Out Slave In (=spi_d) signal, or -1 if not used.
+      .mosi_io_num = SPI_MOSI,       //< GPIO pin for Master Out Slave In (=spi_d) signal, or -1 if not used.
       .miso_io_num = -1,              //< GPIO pin for Master In Slave Out (=spi_q) signal, or -1 if not used.
-      .sclk_io_num = GPIO_SCLK,       //< GPIO pin for Spi CLocK signal, or -1 if not used.
+      .sclk_io_num = SPI_SCLK,       //< GPIO pin for Spi CLocK signal, or -1 if not used.
       .quadwp_io_num = -1,            //< GPIO pin for WP (Write Protect) signal which is used as D2 in 4-bit communication modes, or -1 if not used.
       .quadhd_io_num = -1,            //< GPIO pin for HD (HolD) signal which is used as D3 in 4-bit communication modes, or -1 if not used.
   };
   spi_device_interface_config_t dev = {
       .clock_speed_hz = SPI_MASTER_FREQ_40M,            // Debug/Release clock
       .mode = 0,                                        // SPI mode
-      .spics_io_num = GPIO_CS,                          // CS pin
+      .spics_io_num = SPI_LCD_CS,                          // CS pin
       .queue_size = LCD_TRANSACTION_COUNT,              // We want to be able to queue a few transactions at a time
       .pre_cb = display_spi_pre_transfer_callback,      // Specify pre-transfer callback to handle D/C line
       .post_cb = display_spi_post_transfer_callback,
@@ -91,7 +91,7 @@ esp_err_t spi_write_lcd_data(const uint8_t *data, size_t data_length) {
 
 esp_err_t display_set_backlight(bool val) {
   int _bl = (int) val;
-  return gpio_set_level(GPIO_BL, _bl);
+  return gpio_set_level(LCD_BL, _bl);
 }
 
 esp_err_t spi_read_lcd_data(uint8_t *data, size_t data_length) {

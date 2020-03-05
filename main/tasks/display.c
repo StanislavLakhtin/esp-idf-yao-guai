@@ -53,12 +53,12 @@ void display_task(void *args) {
 
   spi_master_lcd_init();
 
-  ESP_LOGI(TAG, "  MOSI: %d", GPIO_MOSI);
-  ESP_LOGI(TAG, "  SCLK: %d", GPIO_SCLK);
-  ESP_LOGI(TAG, "    CS: %d", GPIO_CS);
-  ESP_LOGI(TAG, "    DC: %d", GPIO_DC);
-  ESP_LOGI(TAG, "   RST: %d", GPIO_RESET);
-  ESP_LOGI(TAG, "    BL: %d\n", GPIO_BL);
+  ESP_LOGI(TAG, "  MOSI: %d", SPI_MOSI);
+  ESP_LOGI(TAG, "  SCLK: %d", SPI_SCLK);
+  ESP_LOGI(TAG, "    CS: %d", SPI_LCD_CS);
+  ESP_LOGI(TAG, "    DC: %d", SPI_DC);
+  ESP_LOGI(TAG, "   RST: %d", SPI_LCD_RESET);
+  ESP_LOGI(TAG, "    BL: %d\n", LCD_BL);
 
   ESP_LOGI(TAG, "Detect LCD type\n");
 
@@ -105,9 +105,7 @@ void display_task(void *args) {
 esp_err_t test_display(lcd_device_t *dev) {
   PAUSE(1)
   ESP_LOGI(TAG, "fill black");
-  color_t bg = {.r = 0x0, .g = 0x0, .b = 0x0};
-  color_t c = {.r = MAX, .g = 0x0, .b = 0x0};
-  PAUSE(1)
+  color_t bg , c;
   set_color(bg, 0,0,0);
   fill_rect(dev, 0, 0, dev->width,  dev->height, &bg);
   set_color(c, MAX,MAX, MAX);

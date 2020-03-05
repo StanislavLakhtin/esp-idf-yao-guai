@@ -49,6 +49,6 @@ void ow_periodically_scan_task(void *arg) {
     } else {
       ESP_LOGW(OW_TASK_TAG, "There are no any device on 1-wire bus. ");
     }
-    vTaskDelay(3000 / portTICK_PERIOD_MS);
+    vTaskDelay(30000 / portTICK_PERIOD_MS);
   }
 }
