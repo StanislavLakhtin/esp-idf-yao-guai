@@ -213,8 +213,6 @@ typedef enum {
 typedef struct {
   uint16_t width;                     // Device (hardware) width
   uint16_t height;                    // Device (hardware) height
-  uint16_t offset_x;                  // Offset by X  (base 0 line)
-  uint16_t offset_y;                  // Offset by Y  (base 0 line)
   write_lcd_cmnd *write_cmnd;
   write_lcd_data *write_data;
   read_lcd_data *read_data;

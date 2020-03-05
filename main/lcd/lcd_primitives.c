@@ -23,9 +23,7 @@ esp_err_t draw_pixel(lcd_device_t *dev, uint16_t x, uint16_t y, color_t * color)
     return ESP_OK;
   uint8_t buf[2];
   color_list_to_bytes(buf, 2, color, 1);
-  uint16_t _x = x + dev->offset_x;
-  uint16_t _y = y + dev->offset_y;
-  ESP_ERROR_CHECK_WITH_INTERRUPT(frame_set(dev, _x, _x, _y, _y));
+  ESP_ERROR_CHECK_WITH_INTERRUPT(frame_set(dev, x, x, y, y));
   ESP_ERROR_CHECK_WITH_INTERRUPT(dev->write_cmnd(RAMWR));
   return (dev->write_data(buf, 2));
 }

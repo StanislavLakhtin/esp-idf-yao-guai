@@ -2,8 +2,6 @@
 // Created by Stanislav Lakhtin on 06/02/2020.
 //
 
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 #include "yao-guai.h"
 #include "tasks/wifi_fsm/wifi_fsm.h"
 
