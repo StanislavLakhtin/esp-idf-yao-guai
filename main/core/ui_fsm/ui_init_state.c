@@ -4,7 +4,7 @@
 
 #include "ui_fsm.h"
 
-static const char * hello = "YaoGuai WS";
+static const char * hello = "YaoGuai WS\r";
 
 enum ret_codes_t ui_init_state( void ) {
   ESP_LOGI(TAG, "Process to UI init state");
