@@ -49,8 +49,7 @@ void display_task( void * args ) {
   type_lcd_t lcd_detected_type = LCD_TYPE_ILI9340;
 
   if ( id ) {
-    // none-zero, ST7789 chip detected
-    lcd_detected_type = LCD_TYPE_ST7789;
+    lcd_detected_type = LCD_TYPE_ST7789;      // none-zero, ST7789 chip detected
     ESP_LOGI( TAG, "ST7789V detected.\n" );
   } else
     ESP_LOGI( TAG, "ILI934x detected.\n" );
@@ -67,18 +66,6 @@ void display_task( void * args ) {
 
   lcd_init( lcd_dev, lcd_type );   // take a note, that you MUST call init only after
   ESP_LOGI( TAG, "Display w:h (%d:%d)", lcd_dev->width, lcd_dev->height );
-  esp_chip_info_t chip_info;
-  esp_chip_info( &chip_info );
-  ESP_LOGI( TAG, "This is %s chip with %d CPU cores, WiFi%s%s, ",
-            CHIP_NAME,
-            chip_info.cores,
-            ( chip_info.features & CHIP_FEATURE_BT ) ? "/BT" : "",
-            ( chip_info.features & CHIP_FEATURE_BLE ) ? "/BLE" : "" );
-
-  ESP_LOGI( TAG, "silicon revision %d, ", chip_info.revision );
-
-  ESP_LOGI( TAG, "%dMB %s flash\n", spi_flash_get_chip_size() / ( 1024 * 1024 ),
-            ( chip_info.features & CHIP_FEATURE_EMB_FLASH ) ? "embedded" : "external" );
   enum ui_states_t cur_state = UI_ENTRY_STATE;
   enum ret_codes_t rc;
   state_fptr_t fn;

@@ -11,6 +11,8 @@
 #include "yao-guai.h"
 #include "btns/yao_guai_btns.h"
 
+static const char * TAG = "LOADER";
+
 void IRAM_ATTR encoder_isr_handler(void* arg) {
   encoder_t * encoder = arg;
   //TickType_t tick = xTaskGetTickCountFromISR();
@@ -96,6 +98,19 @@ void app_main(void) {
   ESP_ERROR_CHECK(esp_event_loop_create_default());
 
   ESP_ERROR_CHECK(ow_uart_driver_init());
+
+  esp_chip_info_t chip_info;
+  esp_chip_info( &chip_info );
+  ESP_LOGI( TAG, "This is %s chip with %d CPU cores, WiFi%s%s, ",
+            CHIP_NAME,
+            chip_info.cores,
+            ( chip_info.features & CHIP_FEATURE_BT ) ? "/BT" : "",
+            ( chip_info.features & CHIP_FEATURE_BLE ) ? "/BLE" : "" );
+
+  ESP_LOGI( TAG, "silicon revision %d, ", chip_info.revision );
+
+  ESP_LOGI( TAG, "%dMB %s flash\n", spi_flash_get_chip_size() / ( 1024 * 1024 ),
+            ( chip_info.features & CHIP_FEATURE_EMB_FLASH ) ? "embedded" : "external" );
 
   xTaskCreate(gpio_task, "gpio_task", 2048, NULL, 10, NULL);
   xTaskCreate(main_connection_task, "main_connection_task", 4096, NULL, 10, NULL);
