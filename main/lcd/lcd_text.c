@@ -373,6 +373,8 @@ esp_err_t draw_monospace_text(lcd_device_t *dev, ascii_text_frame_t *text_frame,
     if (dest[index] == '\n') {
       text_frame->current_x = text_frame->x0;
       text_frame->current_y += text_frame->row_height * size_y;
+    }  else if ( dest[index] == '\r' ){
+      text_frame->current_x = text_frame->x0;
     } else {
       draw_ascii_char_fast(dev, text_frame->current_x, text_frame->current_y, dest[index], color, bg_color, size_x, size_y);
       text_frame->current_x += 6 * size_x;

@@ -9,8 +9,8 @@
     CONDITIONS OF ANY KIND, either express or implied.
 */
 
-#ifndef YAO_GUAI_OS_TASKS_H
-#define YAO_GUAI_OS_TASKS_H
+#ifndef YAO_GUAI_OS_CORE_H
+#define YAO_GUAI_OS_CORE_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,4 +39,4 @@ esp_err_t display_set_backlight(bool val);
 }
 #endif
 
-#endif //YAO_GUAI_OS_TASKS_H
+#endif //YAO_GUAI_OS_CORE_H

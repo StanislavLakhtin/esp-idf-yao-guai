@@ -77,6 +77,7 @@ static void gpio_task(void* arg) {
   btns_event_t event;
   for(;;) {
     if(xQueueReceive(kbrd_evnt_queue, &event, portMAX_DELAY)) {
+      //xTaskNotify(ui_task_handler, 1ULL, eNoAction);
       printf("[ %c ]", event);
     }
   }
@@ -111,9 +112,8 @@ void app_main(void) {
 
   ESP_LOGI( TAG, "%dMB %s flash\n", spi_flash_get_chip_size() / ( 1024 * 1024 ),
             ( chip_info.features & CHIP_FEATURE_EMB_FLASH ) ? "embedded" : "external" );
-
-  xTaskCreate(gpio_task, "gpio_task", 2048, NULL, 10, NULL);
   xTaskCreate(main_connection_task, "main_connection_task", 4096, NULL, 10, NULL);
-  xTaskCreate(ui_task, "display_task", 4096, NULL, 10, NULL);
+  xTaskCreate(ui_task, "display_task", 4096, NULL, 10, ui_task_handler);
   xTaskCreate(ow_periodically_scan_task, "ow_periodically_scan_task", 2048, NULL, 10, NULL);
+  xTaskCreate(gpio_task, "gpio_task", 2048, NULL, 10, NULL);
 }

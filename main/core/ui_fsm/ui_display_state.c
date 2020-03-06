@@ -9,7 +9,7 @@ enum ret_codes_t ui_display_state( void ) {
   color_t bg , c;
   set_color(bg, 0,0,0);
   fill_rect(lcd_dev, 0, 0, lcd_dev->width,  lcd_dev->height, &bg);
-  set_color(c, MAX,MAX, MAX);
+  set_color(c, MAX_INTENSITY,MAX_INTENSITY, MAX_INTENSITY);
   ascii_text_frame_t ascii_frame = {
       .x0 = 4,
       .y0 = 4,

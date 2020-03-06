@@ -62,7 +62,7 @@
   }
 #endif
 
-#define MAX 63
+#define MAX_INTENSITY 63
 typedef struct {
     uint8_t b:6;
     uint8_t g:6;

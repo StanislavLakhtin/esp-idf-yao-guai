@@ -21,11 +21,6 @@ enum ui_states_t ui_lookup_transitions(enum ui_states_t state, enum ret_codes_t 
   return UI_UNKNOWN_STATE;
 }
 
-enum ret_codes_t ui_init_state( void ) {
-  // show some logo
-  return FSM_OK ;
-}
-
 enum ret_codes_t ui_error_state( void ) {
   // show error for a short time (?) and switch to init
   return FSM_OK;

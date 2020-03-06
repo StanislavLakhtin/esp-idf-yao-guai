@@ -3,7 +3,7 @@
 //
 
 #include "yao-guai.h"
-#include "tasks/wifi_fsm/wifi_fsm.h"
+#include "core/wifi_fsm/wifi_fsm.h"
 
 // Основная логика:
 // 1. Просканировать существующие сети

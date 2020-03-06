@@ -52,6 +52,8 @@ typedef struct {
   uint8_t priority;
 } stored_ssid_conf_t;
 
+TaskHandle_t * ui_task_handler;
+
 #ifdef __cplusplus
 extern "C"
 {
