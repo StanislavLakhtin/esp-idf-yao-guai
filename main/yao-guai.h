@@ -63,7 +63,7 @@ void conf_init(conf_t * conf);
 // --------------- Tasks ---------------
 void ow_periodically_scan_task(void *arg);
 void main_connection_task(void *arg);
-void display_task(void *arg);
+void ui_task(void *arg);
 
 // SD-Card
 esp_err_t sdcard_session_start(conf_t *conf);

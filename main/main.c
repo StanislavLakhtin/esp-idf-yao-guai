@@ -114,6 +114,6 @@ void app_main(void) {
 
   xTaskCreate(gpio_task, "gpio_task", 2048, NULL, 10, NULL);
   xTaskCreate(main_connection_task, "main_connection_task", 4096, NULL, 10, NULL);
-  xTaskCreate(display_task, "display_task", 4096, NULL, 10, NULL);
+  xTaskCreate(ui_task, "display_task", 4096, NULL, 10, NULL);
   xTaskCreate(ow_periodically_scan_task, "ow_periodically_scan_task", 2048, NULL, 10, NULL);
 }

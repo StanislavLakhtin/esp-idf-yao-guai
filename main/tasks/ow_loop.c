@@ -30,7 +30,7 @@ static void reverse_as_chars(const uint8_t * from, char* to, int from_length) {
 void ow_periodically_scan_task(void *arg) {
   char _mac[13];
 
-  while (1) {
+  loop {
     uint16_t _presence = ow_dev.reset();
     if ( _presence ) {
       ESP_LOGI(OW_TASK_TAG, "PRESENCE detected on 1-wire bus. Presence signal: %d", _presence);

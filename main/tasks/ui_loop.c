@@ -18,8 +18,8 @@
 #include "yao-guai.h"
 #include "ui_fsm/ui_fsm.h"
 
-static const state_fptr_t ui_states_fn[] = { ui_init_state,
-                                             ui_error_state,
+static const state_fptr_t ui_states_fn[] = { ui_error_state,
+                                             ui_init_state,
                                              ui_display_state };
 
 lcd_device_t ui_dev = { .width = 320, .height = 240,
@@ -29,7 +29,7 @@ lcd_device_t ui_dev = { .width = 320, .height = 240,
     .set_backlight = &display_set_backlight
 };
 
-void display_task( void * args ) {
+void ui_task(void * args ) {
   ESP_LOGI( TAG, "Hello world from Yao GUAI [meteo]station.\n" );
 
   lcd_dev = &ui_dev;
