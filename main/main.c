@@ -112,8 +112,8 @@ void app_main(void) {
 
   ESP_LOGI( TAG, "%dMB %s flash\n", spi_flash_get_chip_size() / ( 1024 * 1024 ),
             ( chip_info.features & CHIP_FEATURE_EMB_FLASH ) ? "embedded" : "external" );
-  xTaskCreate(main_connection_task, "main_connection_task", 4096, NULL, 10, NULL);
-  xTaskCreate(ui_task, "display_task", 4096, NULL, 10, ui_task_handler);
-  xTaskCreate(ow_periodically_scan_task, "ow_periodically_scan_task", 2048, NULL, 10, NULL);
-  xTaskCreate(gpio_task, "gpio_task", 2048, NULL, 10, NULL);
+  xTaskCreatePinnedToCore(main_connection_task, "main_connection_task", 4096, NULL, 5, NULL, APP_CPU_NUM);
+  xTaskCreatePinnedToCore(ui_task, "display_task", 4096, NULL, 6, ui_task_handler, APP_CPU_NUM);
+  xTaskCreatePinnedToCore(ow_periodically_scan_task, "ow_periodically_scan_task", 2048, NULL, 7, NULL, APP_CPU_NUM);
+  xTaskCreatePinnedToCore(gpio_task, "gpio_task", 2048, NULL, 8, NULL, PRO_CPU_NUM);
 }
