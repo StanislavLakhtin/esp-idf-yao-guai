@@ -11,6 +11,7 @@ typedef enum {
 } display_state_t;
 
 static display_state_t st;
+enum ret_codes_t r_code;
 
 static void draw_hello_str( void ) {
   color_t bg, c;
@@ -37,10 +38,9 @@ static void draw_screen0( void ) {
   LISTEN_IO_MS(1000);
 }
 
-enum ret_codes_t r_code;
-
 void ui0_listener( btns_event_t event ) {
   printf( "event: %c", event );
+  r_code = FSM_OK;
 }
 
 enum ret_codes_t ui_idle_state( void ) {
