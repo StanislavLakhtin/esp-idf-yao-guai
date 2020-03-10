@@ -29,6 +29,7 @@ enum ret_codes_t ui_idle_state( void ) {
   return FSM_OK ;
 }
 
-void ui0_listener( void ) {
 
+void ui0_listener( btns_event_t event ) {
+  printf("event: %c", event);
 }

@@ -51,7 +51,7 @@ enum ret_codes_t ui_settings_state( void );
 
 ui_states_t ui_lookup_transitions(ui_states_t state, enum ret_codes_t code );
 
-void ui0_listener( void );
+void ui0_listener( btns_event_t event );
 
 #ifdef __cplusplus
 }
