@@ -6,8 +6,8 @@
 
 static const char * hello = "YaoGuai WS\r";
 
-enum ret_codes_t ui_init_state( void ) {
-  ESP_LOGI(TAG, "Process to UI init state");
+enum ret_codes_t ui_idle_state( void ) {
+  ESP_LOGI(TAG, "Process to UI idle state");
   color_t bg , c;
   set_color(bg, 0,0,0);
   fill_rect(lcd_dev, 0, 0, lcd_dev->width,  lcd_dev->height, &bg);
@@ -25,6 +25,10 @@ enum ret_codes_t ui_init_state( void ) {
     set_color(c, i,i,i);
     draw_monospace_text(lcd_dev, &ascii_frame, hello, strlen(hello), &c, &bg, normal, normal);
   }
-  PAUSE(1);
+  LISTEN_IO_MS(1000);
   return FSM_OK ;
+}
+
+void ui0_listener( void ) {
+
 }

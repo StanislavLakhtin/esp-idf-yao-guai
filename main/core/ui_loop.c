@@ -19,8 +19,13 @@
 #include "ui_fsm/ui_fsm.h"
 
 static const state_fptr_t ui_states_fn[] = { ui_error_state,
-                                             ui_init_state,
-                                             ui_display_state };
+                                             ui_idle_state,
+                                             ui_settings_state };
+
+static const io_event_listener_fptr_t default_handlers[] = { ui0_listener,
+    NULL,
+    NULL
+};
 
 lcd_device_t ui_dev = { .width = 320, .height = 240,
     .write_cmnd = &spi_write_lcd_cmnd,
@@ -66,12 +71,13 @@ void ui_task(void * args ) {
 
   lcd_init( lcd_dev, lcd_type );   // take a note, that you MUST call init only after
   ESP_LOGI( TAG, "Display w:h (%d:%d)", lcd_dev->width, lcd_dev->height );
-  enum ui_states_t cur_state = UI_ENTRY_STATE;
+  ui_states_t cur_state = UI_ENTRY_STATE;
   enum ret_codes_t rc;
   state_fptr_t fn;
 
   loop {
     fn = ui_states_fn[ cur_state ];
+    current_input_handler = default_handlers[ cur_state ];
     rc = fn();
     cur_state = ui_lookup_transitions( cur_state, rc );
   }

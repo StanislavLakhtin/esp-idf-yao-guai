@@ -10,31 +10,33 @@
 #include "lcd/lcd_driver.h"
 #include "lcd_spi_driver/esp32_lcd_spi_driver.h"
 
-enum ui_states_t { // MUST BE THE SAME FSM ORDER as in ui loop task
+typedef enum  { // MUST BE THE SAME FSM ORDER as in ui loop task
   error = 0,
-  init = 1,
-  display = 2,
-};
+  idle = 1,
+  settings = 2,
+} ui_states_t;
+
+typedef void (* io_event_listener_fptr_t) ( btns_event_t event );
 
 typedef struct {
-  enum ui_states_t src;
+  ui_states_t src;
   enum ret_codes_t ret_codes;
-  enum ui_states_t dst;
+  ui_states_t dst;
 } ui_transition_t;
 
-#define UI_ENTRY_STATE init
-#define UI_UNKNOWN_STATE display
+#define UI_ENTRY_STATE idle
+#define UI_UNKNOWN_STATE error
+
+io_event_listener_fptr_t current_input_handler;
 
 static const char * TAG = "ui";
 
-#define PAUSE( SEC ) for (int i = SEC; i > 0; i--) { \
-  printf("continue in %d seconds...\n", i); \
-  delayMs(1000); \
-}
-
-#define PAUSE_BTNS( xTimeInSec, BTNS_EVENT) if(xQueueReceive(kbrd_evnt_queue, BTNS_EVENT, pdMS_TO_TICKS ( xTimeInMs * 1000 ))) {\
-  printf("[ %c ]", event);\
-}
+#define LISTEN_IO_MS( xTimeInMs ) do { \
+  btns_event_t event; \
+    if(xQueueReceive(kbrd_evnt_queue, &event, pdMS_TO_TICKS ( xTimeInMs * 1000 ))) { \
+      if (current_input_handler) current_input_handler(event); \
+    } \
+  } while (0);
 
 lcd_device_t * lcd_dev;
 
@@ -43,11 +45,13 @@ extern "C"
 {
 #endif
 
-enum ret_codes_t ui_init_state( void );
+enum ret_codes_t ui_idle_state( void );
 enum ret_codes_t ui_error_state( void );
-enum ret_codes_t ui_display_state( void );
+enum ret_codes_t ui_settings_state( void );
 
-enum ui_states_t ui_lookup_transitions( enum ui_states_t state, enum ret_codes_t code );
+ui_states_t ui_lookup_transitions(ui_states_t state, enum ret_codes_t code );
+
+void ui0_listener( void );
 
 #ifdef __cplusplus
 }

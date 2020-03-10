@@ -4,7 +4,7 @@
 
 #include "ui_fsm.h"
 
-enum ret_codes_t ui_display_state( void ) {
+enum ret_codes_t ui_settings_state( void ) {
   ESP_LOGI(TAG, "fill black");
   color_t bg , c;
   set_color(bg, 0,0,0);
@@ -33,19 +33,19 @@ enum ret_codes_t ui_display_state( void ) {
   uint8_t med = max / 2;
   lcd_dev->write_cmnd(TFT_DISBR);
   lcd_dev->write_data(&min, 1);
-  PAUSE(5);
+  LISTEN_IO_MS(5000);
   lcd_dev->write_cmnd(TFT_DISBR);
   lcd_dev->write_data(&max, 1);
-  PAUSE(5);
+  LISTEN_IO_MS(5000);
   lcd_dev->write_cmnd(TFT_DISBR);
   lcd_dev->write_data(&med, 1);
-  PAUSE(5);
+  LISTEN_IO_MS(5000);
   fill_rect(lcd_dev, 0, 0, lcd_dev->width,  lcd_dev->height, &bg);
   ascii_frame.current_x = 4;
   ascii_frame.current_y = 4;
   char * str = "В чащах юга жил был цитрус?\nДа, но фальшивый экземпляр!\nСъешь же ещё этих мягких французских булок, да выпей чаю.\nЁмаё! (для буквы ё)";
   draw_monospace_text(lcd_dev, &ascii_frame, str, strlen(str), &c, &bg, normal, normal);
-  PAUSE(5);
+  LISTEN_IO_MS(5000);
   fill_rect(lcd_dev, 0, 0, lcd_dev->width,  lcd_dev->height, &bg);
   ascii_frame.current_x = 4;
   ascii_frame.current_y = 4;
@@ -57,7 +57,7 @@ enum ret_codes_t ui_display_state( void ) {
   draw_monospace_text(lcd_dev, &ascii_frame, "Это 3x4\n", strlen(str), &c, &bg, big, big);
   draw_monospace_text(lcd_dev, &ascii_frame, "Даже 4x4!\n", strlen(str), &c, &bg, enormous, enormous);
   draw_monospace_text(lcd_dev, &ascii_frame, "А возможно и странные 1x4. А вдруг?!\n", strlen(str), &c, &bg, tiny, enormous);
-  PAUSE(5);
+  LISTEN_IO_MS(5000);
   fflush(stdout);
   return FSM_OK;
 }
