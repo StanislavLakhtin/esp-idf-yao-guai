@@ -75,9 +75,8 @@ void IRAM_ATTR buttons_isr_handler(void* arg) {
 
 static void gpio_task(void* arg) {
   btns_event_t event;
-  for(;;) {
+  loop {
     if(xQueueReceive(kbrd_evnt_queue, &event, portMAX_DELAY)) {
-      //xTaskNotify(ui_task_handler, 1ULL, eNoAction);
       printf("[ %c ]", event);
     }
   }
@@ -120,5 +119,4 @@ void app_main(void) {
   xTaskCreatePinnedToCore(main_connection_task, "main_connection_task", 4096, NULL, WIFI_PROIRITY, NULL, PRO_CPU_NUM);
   xTaskCreatePinnedToCore(ui_task, "display_task", 4096, NULL, UI_PROIRITY, ui_task_handler, APP_CPU_NUM);
   xTaskCreatePinnedToCore(ow_periodically_scan_task, "ow_periodically_scan_task", 2048, NULL, ONEWIRE_PROIRITY, NULL, PRO_CPU_NUM);
-  xTaskCreatePinnedToCore(gpio_task, "gpio_task", 2048, NULL, GPIO_PROIRITY, NULL, PRO_CPU_NUM);
 }

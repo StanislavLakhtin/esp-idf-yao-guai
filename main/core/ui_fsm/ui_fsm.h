@@ -28,9 +28,13 @@ typedef struct {
 static const char * TAG = "ui";
 
 #define PAUSE( SEC ) for (int i = SEC; i > 0; i--) { \
-    printf("continue in %d seconds...\n", i); \
-    delayMs(1000); \
- }
+  printf("continue in %d seconds...\n", i); \
+  delayMs(1000); \
+}
+
+#define PAUSE_BTNS( xTimeInSec, BTNS_EVENT) if(xQueueReceive(kbrd_evnt_queue, BTNS_EVENT, pdMS_TO_TICKS ( xTimeInMs * 1000 ))) {\
+  printf("[ %c ]", event);\
+}
 
 lcd_device_t * lcd_dev;
 

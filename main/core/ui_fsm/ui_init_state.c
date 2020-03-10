@@ -23,7 +23,7 @@ enum ret_codes_t ui_init_state( void ) {
   };
   for (uint8_t i = 0; i < MAX_INTENSITY; i++ ) {
     set_color(c, i,i,i);
-    draw_monospace_text(lcd_dxev, &ascii_frame, hello, strlen(hello), &c, &bg, normal, normal);
+    draw_monospace_text(lcd_dev, &ascii_frame, hello, strlen(hello), &c, &bg, normal, normal);
   }
   PAUSE(1);
   return FSM_OK ;
