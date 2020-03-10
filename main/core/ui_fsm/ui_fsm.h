@@ -28,7 +28,7 @@ typedef struct {
 static const char * TAG = "ui";
 
 #define PAUSE( SEC ) for (int i = SEC; i > 0; i--) { \
-    printf("Restarting in %d seconds...\n", i); \
+    printf("continue in %d seconds...\n", i); \
     delayMs(1000); \
  }
 

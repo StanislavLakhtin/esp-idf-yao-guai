@@ -83,6 +83,11 @@ static void gpio_task(void* arg) {
   }
 }
 
+#define WIFI_PROIRITY     5
+#define ONEWIRE_PROIRITY  6
+#define UI_PROIRITY       7
+#define GPIO_PROIRITY     8
+
 void app_main(void) {
 
   conf_t conf;
@@ -112,8 +117,8 @@ void app_main(void) {
 
   ESP_LOGI( TAG, "%dMB %s flash\n", spi_flash_get_chip_size() / ( 1024 * 1024 ),
             ( chip_info.features & CHIP_FEATURE_EMB_FLASH ) ? "embedded" : "external" );
-  xTaskCreatePinnedToCore(main_connection_task, "main_connection_task", 4096, NULL, 5, NULL, PRO_CPU_NUM);
-  xTaskCreatePinnedToCore(ui_task, "display_task", 4096, NULL, 6, ui_task_handler, APP_CPU_NUM);
-  xTaskCreatePinnedToCore(ow_periodically_scan_task, "ow_periodically_scan_task", 2048, NULL, 7, NULL, PRO_CPU_NUM);
-  xTaskCreatePinnedToCore(gpio_task, "gpio_task", 2048, NULL, 8, NULL, PRO_CPU_NUM);
+  xTaskCreatePinnedToCore(main_connection_task, "main_connection_task", 4096, NULL, WIFI_PROIRITY, NULL, PRO_CPU_NUM);
+  xTaskCreatePinnedToCore(ui_task, "display_task", 4096, NULL, UI_PROIRITY, ui_task_handler, APP_CPU_NUM);
+  xTaskCreatePinnedToCore(ow_periodically_scan_task, "ow_periodically_scan_task", 2048, NULL, ONEWIRE_PROIRITY, NULL, PRO_CPU_NUM);
+  xTaskCreatePinnedToCore(gpio_task, "gpio_task", 2048, NULL, GPIO_PROIRITY, NULL, PRO_CPU_NUM);
 }

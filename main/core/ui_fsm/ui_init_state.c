@@ -21,18 +21,10 @@ enum ret_codes_t ui_init_state( void ) {
       .current_x = 4,
       .current_y = 4
   };
-  loop {
-    for (uint8_t i = 0; i < MAX_INTENSITY; i++ ) {
-      set_color(c, i,i,i);
-      printf("%d/", i);
-      draw_monospace_text(lcd_dev, &ascii_frame, hello, strlen(hello), &c, &bg, normal, normal);
-    }
-    uint32_t ulNotifiedValue = 0x00;
-    //xTaskNotifyWait(0x00, ULONG_MAX, &ulNotifiedValue, 10);
-    if (ulNotifiedValue) {
-      return FSM_OK;
-    }
-    PAUSE(1);
+  for (uint8_t i = 0; i < MAX_INTENSITY; i++ ) {
+    set_color(c, i,i,i);
+    draw_monospace_text(lcd_dxev, &ascii_frame, hello, strlen(hello), &c, &bg, normal, normal);
   }
-  return FSM_REPEAT ;
+  PAUSE(1);
+  return FSM_OK ;
 }
