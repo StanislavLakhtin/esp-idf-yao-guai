@@ -22,7 +22,7 @@ void yg_draw_header( void ) {
   char wifi_str[40];
   ESP_LOGI( TAG, "header" );
   color_t bg, c;
-  set_color( bg, 30, 30, 30 );
+  set_color( bg, 30, 40, 0 );
   set_color( c, 0, 0, 0 );
   fill_rect( lcd_dev, 0, 0, lcd_dev->width, 18, &bg );
   ascii_text_frame_t ascii_frame = {
@@ -37,6 +37,6 @@ void yg_draw_header( void ) {
          ascii_frame.x1, ascii_frame.y1, ascii_frame.current_x, ascii_frame.current_y);
   memset(wifi_str, 0x00, 40);
   strcpy(wifi_str, "WiFi: ");
-  draw_monospace_text( lcd_dev, &ascii_frame, wifi_str, strlen( wifi_str ), &c, &bg, normal, tiny );
+  draw_monospace_text( lcd_dev, &ascii_frame, wifi_str, strlen( wifi_str ), &c, &bg, tiny, normal );
 }
 

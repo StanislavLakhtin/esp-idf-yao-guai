@@ -24,14 +24,13 @@ static const state_fptr_t ui_states_fn[] = { ui_error_view,
 
 static const io_event_listener_fptr_t default_handlers[] = { NULL,
                                                              ui0_listener,
-                                                             NULL
-};
+                                                             NULL};
 
 lcd_device_t ui_dev = { .width = 320, .height = 240,
     .write_cmnd = &spi_write_lcd_cmnd,
     .write_data = &spi_write_lcd_data,
     .read_data = &spi_read_lcd_data,
-    .set_backlight = &display_set_backlight
+    .set_backlight = &display_set_backlight,
 };
 
 void ui_task(void * args ) {

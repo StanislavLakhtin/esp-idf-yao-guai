@@ -213,6 +213,10 @@ typedef enum {
   LCD_TYPE_ST7789 = 2,
 } type_lcd_t;
 
+typedef enum {
+  normal_orienation = 0,
+  rotated_orientation = 1
+} swap_text_sizes_t;
 
 typedef struct {
   uint16_t width;                     // Device (hardware) width
@@ -231,8 +235,6 @@ typedef struct {
   uint8_t data[16];
   uint8_t databytes; //No of data in data; bit 7 = delay after set; 0xFF = end of cmds.
 } lcd_init_cmd_t;
-
-
 
 #define ESP_READY_FOR_NEXT_VALUE 0x01
 

@@ -315,9 +315,6 @@ esp_err_t draw_ascii_char(lcd_device_t *dev, int16_t x, int16_t y, unsigned char
 esp_err_t draw_ascii_char_fast(lcd_device_t *dev, int16_t x, int16_t y, unsigned char c,
                                color_t * text_color, color_t * bg_color, ascii_font_size_t size_x,
                                ascii_font_size_t size_y) {
-#ifdef AUTO_CHANGE_TEXT_X_Y_DIMENSION_SIZES
-  swap(ascii_font_size_t, size_x, size_y)
-#endif
   if (((x + 6 * size_x) >= dev->width)
       || ((y + 8 * size_y) >= dev->height))
     return ESP_OK;
