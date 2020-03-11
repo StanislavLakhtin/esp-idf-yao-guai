@@ -24,6 +24,8 @@
 #include "peripherials.h"
 #include "lcd/lcd_driver.h"
 
+#define AUTO_CHANGE_TEXT_X_Y_DIMENSION_SIZES 1
+
 #ifdef __cplusplus
 extern "C"
 {

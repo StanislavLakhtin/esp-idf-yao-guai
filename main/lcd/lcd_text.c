@@ -315,6 +315,9 @@ esp_err_t draw_ascii_char(lcd_device_t *dev, int16_t x, int16_t y, unsigned char
 esp_err_t draw_ascii_char_fast(lcd_device_t *dev, int16_t x, int16_t y, unsigned char c,
                                color_t * text_color, color_t * bg_color, ascii_font_size_t size_x,
                                ascii_font_size_t size_y) {
+#ifdef AUTO_CHANGE_TEXT_X_Y_DIMENSION_SIZES
+  swap(ascii_font_size_t, size_x, size_y)
+#endif
   if (((x + 6 * size_x) >= dev->width)
       || ((y + 8 * size_y) >= dev->height))
     return ESP_OK;
@@ -366,6 +369,8 @@ esp_err_t draw_monospace_text(lcd_device_t *dev, ascii_text_frame_t *text_frame,
     return ESP_OK;
   utf8_to_extended_ascii_codes(dest, text, str_len);
   str_len = strlen(dest);
+  text_frame->current_x = max(text_frame->current_x ,text_frame->x0);
+  text_frame->current_y = max(text_frame->current_y , text_frame->y0);
   while (index < str_len) {
     if ((text_frame->current_x + size_x * 6 > text_frame->x1) ||
         (text_frame->current_y + text_frame->row_height * size_y > text_frame->y1))
@@ -373,8 +378,10 @@ esp_err_t draw_monospace_text(lcd_device_t *dev, ascii_text_frame_t *text_frame,
     if (dest[index] == '\n') {
       text_frame->current_x = text_frame->x0;
       text_frame->current_y += text_frame->row_height * size_y;
-    }  else if ( dest[index] == '\r' ){
+    } else if ( dest[index] == '\r' ){
       text_frame->current_x = text_frame->x0;
+    } else if ( dest[index] == '\t' ){
+      text_frame->current_x += size_x * 6 * 2;
     } else {
       draw_ascii_char_fast(dev, text_frame->current_x, text_frame->current_y, dest[index], color, bg_color, size_x, size_y);
       text_frame->current_x += 6 * size_x;

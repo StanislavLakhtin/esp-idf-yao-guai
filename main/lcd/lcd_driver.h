@@ -53,6 +53,10 @@
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 #endif
 
+#ifndef max
+#define max(a, b) (((a) > (b)) ? (a) : (b))
+#endif
+
 #ifndef swap
 #define swap(data_type_t, a, b)   \
   {                               \

@@ -33,24 +33,25 @@ static void draw_hello_str( void ) {
   set_color( bg, 0, 0, 0 );
   fill_rect( lcd_dev, 0, 0, lcd_dev->width, lcd_dev->height, &bg );
   ascii_text_frame_t ascii_frame = {
-      .x0 = 4,
-      .y0 = 4,
+      .x0 = lcd_dev->width/2 - strlen( hello_str )*6 - 4 ,
+      .y0 = lcd_dev->height/2 - 28,
       .x1 = lcd_dev->width - 4,
       .y1 = lcd_dev->height - 4,
-      .auto_wrap = true,
-      .row_height = DEFAULT_ROW_HEIGHT,
-      .current_x = 4,
-      .current_y = 4
+      .auto_wrap = false,
+      .row_height = DEFAULT_ROW_HEIGHT
   };
+  printf("x0: %d, y0: %d, x1: %d, y1: %d, x: %d, y: %d", ascii_frame.x0, ascii_frame.y0,
+         ascii_frame.x1, ascii_frame.y1, ascii_frame.current_x, ascii_frame.current_y);
   for ( uint8_t i = 0 ; i < MAX_INTENSITY ; i++ ) {
     set_color( c, i, i, i );
-    draw_monospace_text( lcd_dev, &ascii_frame, hello_str, strlen( hello_str ), &c, &bg, normal, normal );
+    draw_monospace_text( lcd_dev, &ascii_frame, hello_str, strlen( hello_str ), &c, &bg, enormous, big );
     delayMs( 10 );
   }
 }
 
 static void draw_screen0( void ) {
   ESP_LOGI( TAG, "Screen0" );
+  yg_draw_header();
   LISTEN_IO_MS(1000);
 }
 

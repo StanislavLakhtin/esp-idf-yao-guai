@@ -69,6 +69,8 @@ ui_states_t ui_lookup_transitions(ui_states_t state, enum ret_codes_t code );
 
 void ui0_listener( btns_event_t event );
 
+void yg_draw_header( void );
+
 #ifdef __cplusplus
 }
 #endif
