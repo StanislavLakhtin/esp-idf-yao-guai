@@ -76,7 +76,6 @@ static void draw_menu( void ) {
     draw_button(lcd_dev, &btn_frame, menu[i], strlen(menu[i]), &c, &bg, &brdr_clr, border_sz, padding, header_size_x, header_size_y);
     y_offset += btn_height + margin;
   }
-  LISTEN_IO_MS(30000);
 }
 
 void menu_input_listener(btns_event_t event) {
@@ -107,6 +106,7 @@ enum ret_codes_t ui_settings_view( void ) {
   do {
     view_method = screens[scrn_indx];
     view_method();
+    LISTEN_IO_MS(30000);
   } while (r_code == FSM_REPEAT);
   return r_code;
 }
