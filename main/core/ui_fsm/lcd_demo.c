@@ -1,11 +1,12 @@
 //
 // Created by Stanislav Lakhtin on 11/03/2020.
+// view to debug lcd primitives
 //
 
 #include "ui_fsm.h"
 
-void yg_lcd_demo_view( void ) {
-  ESP_LOGI(TAG, "Debug DEMO Screen");
+static void lines_test ( void ) {
+  ESP_LOGI(TAG, "lines DEMO Screen");
   color_t bg , c;
   set_color(bg, 0,0,0);
   fill_rect(lcd_dev, 0, 0, lcd_dev->width,  lcd_dev->height, &bg);
@@ -21,6 +22,12 @@ void yg_lcd_demo_view( void ) {
     set_color(c, esp_random() % 0xff,esp_random() % 0xff,esp_random() % 0xff);
     draw_fast_v_line(lcd_dev, x, y, 10, &c);
   }
+}
+
+static void rect
+
+void yg_lcd_demo_view( void ) {
+
   LISTEN_IO_MS(5000);
   set_color(bg, 0,0,0);
   fill_rect(lcd_dev, 0, 0, lcd_dev->width,  lcd_dev->height, &bg);

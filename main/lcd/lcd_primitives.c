@@ -119,3 +119,37 @@ esp_err_t draw_fast_h_gradient_line(lcd_device_t *dev, uint16_t x0, uint16_t y0,
   ESP_ERROR_CHECK_WITH_INTERRUPT(frame_fill(dev, x0, _w, y0, y0, buf, _bl, 1));
   return ESP_OK;
 }
+
+esp_err_t draw_fast_rect(lcd_device_t *dev, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t border_width, color_t * color) {
+  if ( x1 < x0 )
+    swap(uint16_t, x1, x0)
+  if ( y1 < y0 )
+    swap(uint16_t, y1, y0)
+  uint16_t w = x1 - x0;
+  uint16_t h = y1 - y0;
+  uint16_t delta = 0;
+  for (int i=0; i < border_width; i++) {
+    if ( ( x1 - delta ) > ( x0 + delta ) ) {
+      draw_fast_v_line(dev, x0 + delta, y0, h, color);
+      draw_fast_v_line(dev, x1 - delta, y0, h, color);
+    }
+    if ( ( y1 - delta ) > ( y0 + delta ) ) {
+      draw_fast_h_line(dev, x0, y0 + delta, w, color);
+      draw_fast_h_line(dev, x0, y1 - delta, w, color);
+    }
+    delta += 1;
+  }
+  return ESP_OK;
+}
+
+esp_err_t draw_fast_rect_fill(lcd_device_t *dev, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t border_width, color_t * color, color_t * bg_color) {
+  if ( x1 < x0 )
+  swap(uint16_t, x1, x0)
+  if ( y1 < y0 )
+  swap(uint16_t, y1, y0)
+  uint16_t w = x1 - x0;
+  uint16_t h = y1 - y0;
+  fill_rect(dev, x0, y0, w, h, bg_color);
+  draw_fast_rect(dev, x0, y0, x1, y1, border_width, color);
+  return ESP_OK;
+}

@@ -279,6 +279,8 @@ esp_err_t draw_pixel(lcd_device_t *dev, uint16_t x, uint16_t y, color_t * color)
 esp_err_t draw_circle(lcd_device_t *dev, int16_t x0, int16_t y0, int16_t r, color_t * color);
 esp_err_t draw_fast_v_line(lcd_device_t *dev, uint16_t x, uint16_t y, uint16_t h, color_t * color);
 esp_err_t draw_fast_h_line(lcd_device_t *dev, uint16_t x, uint16_t y, uint16_t w, color_t * color);
+esp_err_t draw_fast_rect(lcd_device_t *dev, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t border_width, color_t * color);
+esp_err_t draw_fast_rect_fill(lcd_device_t *dev, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t border_width, color_t * color, color_t * bg_color);
 esp_err_t fill_rect(lcd_device_t *dev, uint16_t x0, uint16_t y0, uint16_t width, uint16_t height, color_t * color);
 esp_err_t draw_fast_h_gradient_line(lcd_device_t *dev, uint16_t x0, uint16_t y0, uint16_t w,
                                     color_t * begin_color, color_t * end_color);
