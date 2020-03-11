@@ -48,7 +48,7 @@ static void draw_menu( void ) {
   ascii_font_size_t header_size_x = normal;
   ascii_font_size_t header_size_y = normal;
   uint16_t border_sz = 2;
-  uint16_t padding = 2;
+  uint16_t padding = 4;
   uint16_t margin = 8;
   uint16_t delta_x = lcd_dev->width / 2 - header_size_x * 6 * ( max_sym_cnt() / 2 );
   uint16_t btn_height = header_size_y * 6 + padding * 2 + border_sz * 2;
