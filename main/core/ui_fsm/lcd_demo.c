@@ -9,6 +9,32 @@ void yg_lcd_demo_view( void ) {
   color_t bg , c;
   set_color(bg, 0,0,0);
   fill_rect(lcd_dev, 0, 0, lcd_dev->width,  lcd_dev->height, &bg);
+  for (int i = 0; i < 300; i ++ ){
+    uint16_t x = esp_random() % lcd_dev->width;
+    uint16_t y = esp_random() % lcd_dev->height;
+    set_color(c, esp_random() % 0xff,esp_random() % 0xff,esp_random() % 0xff);
+    draw_fast_h_line(lcd_dev, x, y, 10, &c);
+  }
+  for (int i = 0; i < 300; i ++ ){
+    uint16_t x = esp_random() % lcd_dev->width;
+    uint16_t y = esp_random() % lcd_dev->height;
+    set_color(c, esp_random() % 0xff,esp_random() % 0xff,esp_random() % 0xff);
+    draw_fast_v_line(lcd_dev, x, y, 10, &c);
+  }
+  LISTEN_IO_MS(5000);
+  set_color(bg, 0,0,0);
+  fill_rect(lcd_dev, 0, 0, lcd_dev->width,  lcd_dev->height, &bg);
+  for (int i = 0; i < lcd_dev->height / 2; i += 4 ){
+    uint16_t x = i;
+    uint16_t y = i;
+    set_color(c, 0xff - i,0xff - i,0xff - i);
+    draw_fast_h_line(lcd_dev, x, y, lcd_dev->width - x * 2, &c);
+    draw_fast_v_line(lcd_dev, x, y, lcd_dev->height - y * 2, &c);
+    draw_fast_h_line(lcd_dev, x, lcd_dev->height - y, lcd_dev->width - x * 2, &c);
+    draw_fast_v_line(lcd_dev, lcd_dev->width - x, y, lcd_dev->height - y * 2, &c);
+  }
+  LISTEN_IO_MS(5000);
+  fill_rect(lcd_dev, 0, 0, lcd_dev->width,  lcd_dev->height, &bg);
   set_color(c, MAX_INTENSITY,MAX_INTENSITY, MAX_INTENSITY);
   ascii_text_frame_t ascii_frame = {
       .x0 = 4,
@@ -31,14 +57,6 @@ void yg_lcd_demo_view( void ) {
   uint8_t min = 0x00;
   uint8_t max = 0xff;
   uint8_t med = max / 2;
-  lcd_dev->write_cmnd(TFT_DISBR);
-  lcd_dev->write_data(&min, 1);
-  LISTEN_IO_MS(5000);
-  lcd_dev->write_cmnd(TFT_DISBR);
-  lcd_dev->write_data(&max, 1);
-  LISTEN_IO_MS(5000);
-  lcd_dev->write_cmnd(TFT_DISBR);
-  lcd_dev->write_data(&med, 1);
   LISTEN_IO_MS(5000);
   fill_rect(lcd_dev, 0, 0, lcd_dev->width,  lcd_dev->height, &bg);
   ascii_frame.current_x = 4;

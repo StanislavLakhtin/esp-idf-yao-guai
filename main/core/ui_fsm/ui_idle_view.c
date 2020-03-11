@@ -37,8 +37,8 @@ static void draw_hello_str(void) {
   };
   printf("x0: %d, y0: %d, x1: %d, y1: %d, x: %d, y: %d", ascii_frame.x0, ascii_frame.y0,
          ascii_frame.x1, ascii_frame.y1, ascii_frame.current_x, ascii_frame.current_y);
-  for (uint8_t i = 0; i < MAX_INTENSITY; i++) {
-    set_color(c, i >> 1, i, i >> 1);
+  for (uint8_t i = 0; i < 0xff; i++) {
+    set_color(c, i, i, i);
     draw_monospace_text(lcd_dev, &ascii_frame, hello_str, strlen(hello_str), &c, &bg, enormous, big);
     delayMs(10);
   }
@@ -58,7 +58,7 @@ static screen_view_fptr_t view_method;
 static uint8_t method_indx = 0x00;
 
 #define SCREEN_CNT 3
-static const screen_view_fptr_t screens[SCREEN_CNT] = {draw_screen0, draw_hello_str, yg_lcd_demo_view};
+static const screen_view_fptr_t screens[SCREEN_CNT] = {yg_lcd_demo_view, draw_screen0, draw_hello_str};
 
 void ui0_listener(btns_event_t event) {
   printf("event: %c", event);

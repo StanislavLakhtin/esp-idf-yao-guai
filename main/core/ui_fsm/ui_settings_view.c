@@ -40,7 +40,7 @@ static const size_t max_sym_cnt() {
 
 static void yg_draw_settings_menu_bg (void) {
   color_t bg;
-  set_color(bg, 22,22,22);
+  set_color(bg, 44,44,44);
   fill_rect(lcd_dev, 0, 0, lcd_dev->width,  lcd_dev->height, &bg);
 }
 
@@ -49,17 +49,17 @@ static void draw_menu( void ) {
   ascii_font_size_t header_size_y = normal;
   uint16_t border_sz = 2;
   uint16_t padding = 2;
-  uint16_t margin = 4;
+  uint16_t margin = 8;
   uint16_t delta_x = lcd_dev->width / 2 - header_size_x * 6 * ( max_sym_cnt() / 2 );
   uint16_t btn_height = header_size_y * 6 + padding * 2 + border_sz * 2;
-  uint16_t y_offset = lcd_dev->height - btn_height * MENU_CNT - margin * MENU_CNT;
+  uint16_t y_offset = (lcd_dev->height - btn_height * MENU_CNT - margin * MENU_CNT) / 2;
   color_t c;
   set_color(c, 0xff, 0xff, 0xff);
   color_t bg;
   set_color(bg, 0x33, 0x33, 0x33);
   color_t brdr_clr;
-  set_color(bg, 0x33, 0x00, 0x00);
-  for (int i = 0 ; i < MENU_CNT; i++) {
+  set_color(brdr_clr, 0x33, 0x00, 0x00);
+  for (int i = 0 ; i < 1; i++) {
     ascii_text_frame_t btn_frame = {
         .x0 = delta_x,
         .y0 = y_offset,
@@ -68,7 +68,7 @@ static void draw_menu( void ) {
         .auto_wrap = false,
         .row_height = DEFAULT_ROW_HEIGHT,
     };
-    draw_button(lcd_dev, &btn_frame, menu[i], strlen(menu[i]), &c, &bg, &brdr_clr, padding, header_size_x, header_size_y);
+    draw_button(lcd_dev, &btn_frame, menu[i], strlen(menu[i]), &c, &bg, &brdr_clr, border_sz, padding, header_size_x, header_size_y);
     y_offset += btn_height + margin;
   }
   LISTEN_IO_MS(30000);
@@ -82,8 +82,8 @@ static const screen_view_fptr_t screens[SCREEN_CNT] = {draw_menu};
 
 enum ret_codes_t ui_settings_view( void ) {
   yg_draw_settings_menu_bg();
-  view_method = screens[menu_indx];
   do {
+    view_method = screens[menu_indx];
     view_method();
   } while (r_code == FSM_REPEAT);
   return r_code;
