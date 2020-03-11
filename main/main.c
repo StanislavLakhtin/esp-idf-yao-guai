@@ -73,19 +73,9 @@ void IRAM_ATTR buttons_isr_handler(void* arg) {
   }
 }
 
-static void gpio_task(void* arg) {
-  btns_event_t event;
-  loop {
-    if(xQueueReceive(kbrd_evnt_queue, &event, portMAX_DELAY)) {
-      printf("[ %c ]", event);
-    }
-  }
-}
-
 #define WIFI_PROIRITY     5
 #define ONEWIRE_PROIRITY  6
 #define UI_PROIRITY       7
-#define GPIO_PROIRITY     8
 
 void app_main(void) {
 

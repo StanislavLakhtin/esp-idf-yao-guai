@@ -33,8 +33,10 @@ static const char * TAG = "ui";
 
 #define LISTEN_IO_MS( xTimeInMs ) do { \
   btns_event_t event; \
-    if(xQueueReceive(kbrd_evnt_queue, &event, pdMS_TO_TICKS ( xTimeInMs * 1000 ))) { \
-      if (current_input_handler) current_input_handler(event); \
+    if(xQueueReceive(kbrd_evnt_queue, &event, pdMS_TO_TICKS ( xTimeInMs ))) { \
+      if (current_input_handler != NULL ) \
+        current_input_handler(event); \
+      else ESP_LOGI( TAG, "NULL pointer input handler"); \
     } \
   } while (0);
 

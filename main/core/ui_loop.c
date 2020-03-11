@@ -22,9 +22,9 @@ static const state_fptr_t ui_states_fn[] = { ui_error_state,
                                              ui_idle_state,
                                              ui_settings_state };
 
-static const io_event_listener_fptr_t default_handlers[] = { ui0_listener,
-    NULL,
-    NULL
+static const io_event_listener_fptr_t default_handlers[] = { NULL,
+                                                             ui0_listener,
+                                                             NULL
 };
 
 lcd_device_t ui_dev = { .width = 320, .height = 240,

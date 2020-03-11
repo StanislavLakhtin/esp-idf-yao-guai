@@ -14,6 +14,7 @@ static display_state_t st;
 enum ret_codes_t r_code;
 
 static void draw_hello_str( void ) {
+  ESP_LOGI( TAG, "Hello screen" );
   color_t bg, c;
   set_color( bg, 0, 0, 0 );
   fill_rect( lcd_dev, 0, 0, lcd_dev->width, lcd_dev->height, &bg );
@@ -35,6 +36,7 @@ static void draw_hello_str( void ) {
 }
 
 static void draw_screen0( void ) {
+  ESP_LOGI( TAG, "Screen0" );
   LISTEN_IO_MS(1000);
 }
 
@@ -44,7 +46,7 @@ void ui0_listener( btns_event_t event ) {
 }
 
 enum ret_codes_t ui_idle_state( void ) {
-  ESP_LOGI( TAG, "Process to UI idle state" );
+  ESP_LOGI( TAG, "UI idle state" );
   st = hello_screen;
   r_code = FSM_REPEAT;
   do {
