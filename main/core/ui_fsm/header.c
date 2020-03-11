@@ -37,6 +37,6 @@ void yg_draw_header( void ) {
          ascii_frame.x1, ascii_frame.y1, ascii_frame.current_x, ascii_frame.current_y);
   memset(wifi_str, 0x00, 40);
   strcpy(wifi_str, "WiFi: ");
-  draw_monospace_text( lcd_dev, &ascii_frame, wifi_str, strlen( wifi_str ), &c, &bg, tiny, normal );
+  draw_monospace_text( lcd_dev, &ascii_frame, wifi_str, strlen( wifi_str ), &c, &bg, tiny, tiny );
 }
 
