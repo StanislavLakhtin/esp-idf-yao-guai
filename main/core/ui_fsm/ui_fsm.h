@@ -30,6 +30,7 @@ typedef enum  { // MUST BE THE SAME FSM ORDER as in ui loop task
   settings = 2,
 } ui_states_t;
 
+typedef void (* screen_view_fptr_t )(void);
 typedef void (* io_event_listener_fptr_t) ( btns_event_t event );
 
 typedef struct {
@@ -70,6 +71,7 @@ ui_states_t ui_lookup_transitions(ui_states_t state, enum ret_codes_t code );
 void ui0_listener( btns_event_t event );
 
 void yg_draw_header( void );
+void yg_lcd_demo_view( void );
 
 #ifdef __cplusplus
 }

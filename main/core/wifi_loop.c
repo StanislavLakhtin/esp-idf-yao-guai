@@ -26,6 +26,7 @@ void main_connection_task(void * arg) {
   loop {
     fn = states_fn[cur_state];
     rc = fn();
+    xEventGroupSetBits(xEvents, BIT_WIFI_CHANGE_STATE);
     cur_state = lookup_transitions(cur_state, rc);
     ESP_LOGI( TAG, "Pause for 30 sec" );
     vTaskDelay(30000 / portTICK_PERIOD_MS);  // make

@@ -68,12 +68,12 @@
 
 #define MAX_INTENSITY 63
 typedef struct {
-    uint8_t b:6;
+    uint8_t b:5;
     uint8_t g:6;
-    uint8_t r:6;
+    uint8_t r:5;
 } color_t;
 
-#define set_color(name, R, G, B) name.r = R; name.g = G; name.b = B;
+#define set_color(name, R, G, B) name.r = R >> 3; name.g = G >> 2; name.b = B >> 3;
 #define is_colors_equal(color1, color2) (color1->r == color2->r \
                                       && color1->g == color1->g \
                                       && color1->b == color1->b )
@@ -292,6 +292,9 @@ esp_err_t draw_ascii_char_fast(lcd_device_t *dev, int16_t x, int16_t y, unsigned
 
 esp_err_t draw_monospace_text(lcd_device_t *dev, ascii_text_frame_t *text_frame, const char * text, size_t max_length,
                               color_t * color, color_t * bg_color, ascii_font_size_t size_x, ascii_font_size_t size_y);
+
+esp_err_t draw_button(lcd_device_t *dev, ascii_text_frame_t *frame, const char * text, size_t max_text_length,
+                      color_t * color, color_t * bg_color, color_t * brdr_color, uint16_t padding, ascii_font_size_t size_x, ascii_font_size_t size_y);
 
 uint8_t reverse(uint8_t b);
 
