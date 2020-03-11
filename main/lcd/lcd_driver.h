@@ -73,7 +73,9 @@ typedef struct {
     uint8_t r:5;
 } color_t;
 
-#define set_color(name, R, G, B) name.r = (R) >> 3; name.g = (G) >> 2; name.b = (B) >> 3;
+#define set_color(name, R, G, B) do {\
+    name.r = (R) >> 3; name.g = (G) >> 2; name.b = (B) >> 3; \
+  } while (0)
 #define is_colors_equal(color1, color2) (color1->r == color2->r \
                                       && color1->g == color1->g \
                                       && color1->b == color1->b )

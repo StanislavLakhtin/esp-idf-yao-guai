@@ -18,7 +18,9 @@
 
 #include "ui_fsm.h"
 
+static uint8_t scrn_indx = 0x00;
 static uint8_t menu_indx = 0x00;
+
 enum ret_codes_t r_code = FSM_REPEAT;
 
 #define MENU_CNT 3
@@ -56,7 +58,6 @@ static void draw_menu( void ) {
   color_t c;
   set_color(c, 0xff, 0xff, 0xff);
   color_t bg;
-  set_color(bg, 0x33, 0x33, 0x33);
   color_t brdr_clr;
   set_color(brdr_clr, 0x33, 0x00, 0x00);
   for (int i = 0 ; i < 1; i++) {
@@ -68,14 +69,35 @@ static void draw_menu( void ) {
         .auto_wrap = false,
         .row_height = DEFAULT_ROW_HEIGHT,
     };
+    if ( i == menu_indx )
+      set_color(bg, 55, 0x55, 0x55);
+    else
+      set_color(bg, 0xaa, 0xaa, 0xaa);
     draw_button(lcd_dev, &btn_frame, menu[i], strlen(menu[i]), &c, &bg, &brdr_clr, border_sz, padding, header_size_x, header_size_y);
     y_offset += btn_height + margin;
   }
   LISTEN_IO_MS(30000);
 }
 
+void menu_input_listener(btns_event_t event) {
+  printf("event: %c", event);
+  switch (event) {
+    case ENCODER0_PRESS:
+      r_code = FSM_OK;
+      break;
+    case ENCODER0_ROTATE_RIGHT:
+      menu_indx = (menu_indx >= MENU_CNT - 1) ? menu_indx = 0: menu_indx + 1;
+      break;
+    case ENCODER0_ROTATE_LEFT:
+      menu_indx = (menu_indx == 0 ) ? menu_indx = MENU_CNT - 1: menu_indx - 1;
+      break;
+    default:
+      break;
+  }
+  printf("menu method index: %d", menu_indx);
+}
+
 static screen_view_fptr_t view_method;
-static uint8_t method_indx = 0x00;
 
 #define SCREEN_CNT 1
 static const screen_view_fptr_t screens[SCREEN_CNT] = {draw_menu};
@@ -83,7 +105,7 @@ static const screen_view_fptr_t screens[SCREEN_CNT] = {draw_menu};
 enum ret_codes_t ui_settings_view( void ) {
   yg_draw_settings_menu_bg();
   do {
-    view_method = screens[menu_indx];
+    view_method = screens[scrn_indx];
     view_method();
   } while (r_code == FSM_REPEAT);
   return r_code;

@@ -69,6 +69,7 @@ enum ret_codes_t ui_settings_view( void );
 ui_states_t ui_lookup_transitions(ui_states_t state, enum ret_codes_t code );
 
 void ui0_listener( btns_event_t event );
+void menu_input_listener( btns_event_t event );
 
 void yg_draw_header( void );
 void yg_lcd_demo_view( void );
