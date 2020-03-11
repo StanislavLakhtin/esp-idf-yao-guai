@@ -1,7 +1,21 @@
 #pragma once
-//
-// Created by Stanislav Lakhtin on 04.03.2020.
-//
+/*  Created by Stanislav Lakhtin on 06.01.2020.
+
+    Yao GUAI UI FSM
+
+    This example code is in the Public Domain (or CC0 licensed, at your option.)
+
+    Unless required by applicable law or agreed to in writing, this
+    software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+    CONDITIONS OF ANY KIND, either express or implied.
+
+    Support for several separate devices / screens in one library is antipattern.
+    However, ST7789 and ILI-9340 have such a common interaction interface that combining them
+    within a common library may make sense.
+
+    This library is a compromise in this matter. The main goal is to ensure the speed of execution and
+    the absence of checks on the time of execution.
+*/
 
 #ifndef ESP32_YAO_GUAI_WEATHER_FIRMWARE_UI_FSM_H
 #define ESP32_YAO_GUAI_WEATHER_FIRMWARE_UI_FSM_H
@@ -33,7 +47,7 @@ static const char * TAG = "ui";
 
 #define LISTEN_IO_MS( xTimeInMs ) do { \
   btns_event_t event; \
-    if(xQueueReceive(kbrd_evnt_queue, &event, pdMS_TO_TICKS ( xTimeInMs ))) { \
+    if (xQueueReceive(kbrd_evnt_queue, &event, pdMS_TO_TICKS ( xTimeInMs ))) { \
       if (current_input_handler != NULL ) \
         current_input_handler(event); \
       else ESP_LOGI( TAG, "NULL pointer input handler"); \
@@ -47,9 +61,9 @@ extern "C"
 {
 #endif
 
-enum ret_codes_t ui_idle_state( void );
-enum ret_codes_t ui_error_state( void );
-enum ret_codes_t ui_settings_state( void );
+enum ret_codes_t ui_idle_view( void );
+enum ret_codes_t ui_error_view( void );
+enum ret_codes_t ui_settings_view( void );
 
 ui_states_t ui_lookup_transitions(ui_states_t state, enum ret_codes_t code );
 

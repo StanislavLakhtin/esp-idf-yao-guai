@@ -1,10 +1,24 @@
-//
-// Created by Stanislav Lakhtin on 05.03.2020.
-//
+/*  Created by Stanislav Lakhtin on 06.01.2020.
+
+    Yao GUAI UI FSM
+
+    This example code is in the Public Domain (or CC0 licensed, at your option.)
+
+    Unless required by applicable law or agreed to in writing, this
+    software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+    CONDITIONS OF ANY KIND, either express or implied.
+
+    Support for several separate devices / screens in one library is antipattern.
+    However, ST7789 and ILI-9340 have such a common interaction interface that combining them
+    within a common library may make sense.
+
+    This library is a compromise in this matter. The main goal is to ensure the speed of execution and
+    the absence of checks on the time of execution.
+*/
 
 #include "ui_fsm.h"
 
-enum ret_codes_t ui_settings_state( void ) {
+enum ret_codes_t ui_settings_view( void ) {
   ESP_LOGI(TAG, "fill black");
   color_t bg , c;
   set_color(bg, 0,0,0);
