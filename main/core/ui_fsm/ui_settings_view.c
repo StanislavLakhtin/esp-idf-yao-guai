@@ -55,10 +55,8 @@ static void draw_menu( void ) {
   uint16_t delta_x = lcd_dev->width / 2 - header_size_x * 6 * ( max_sym_cnt() / 2 );
   uint16_t btn_height = header_size_y * 8 + padding * 2 + border_sz * 2;
   uint16_t y_offset = (lcd_dev->height - btn_height * MENU_CNT - margin * MENU_CNT) / 2;
-  color_t c;
+  color_t c, bg, brdr_clr;
   set_color(c, 0xff, 0xff, 0xff);
-  color_t bg;
-  color_t brdr_clr;
   set_color(brdr_clr, 0x33, 0x00, 0x00);
   for (int i = 0 ; i < 1; i++) {
     ascii_text_frame_t btn_frame = {
