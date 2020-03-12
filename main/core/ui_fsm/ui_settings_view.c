@@ -52,7 +52,7 @@ static void draw_menu( void ) {
   uint16_t border_sz = 2;
   uint16_t padding = 4;
   uint16_t margin = 8;
-  uint16_t delta_x = lcd_dev->width / 2 - header_size_x * 6 * ( max_sym_cnt() / 2 );
+  uint16_t delta_x = lcd_dev->width / 2 - header_size_x * 6 * ( max_sym_cnt() / 2 ) - border_sz * 2 - padding * 2;
   uint16_t btn_height = header_size_y * DEFAULT_ROW_HEIGHT + padding * 2 + border_sz * 2 + 1;    // 1 -- empty line above symbols
   uint16_t y_offset = (lcd_dev->height - btn_height * MENU_CNT - margin * MENU_CNT) / 2;
   color_t c, bg, brdr_clr;
@@ -71,7 +71,8 @@ static void draw_menu( void ) {
       set_color(bg, 55, 0x55, 0x55);
     else
       set_color(bg, 0xaa, 0xaa, 0xaa);
-    draw_button(lcd_dev, &btn_frame, menu[i], strlen(menu[i]), &c, &bg, &brdr_clr, border_sz, padding, header_size_x, header_size_y);
+    char * button_name = menu[i];
+    draw_button(lcd_dev, &btn_frame, button_name, strlen(button_name), &c, &bg, &brdr_clr, border_sz, padding, header_size_x, header_size_y);
     y_offset += btn_height + margin;
   }
 }
@@ -91,7 +92,6 @@ void menu_input_listener(btns_event_t event) {
     default:
       break;
   }
-  printf("menu method index: %d", menu_indx);
 }
 
 static screen_view_fptr_t view_method;
