@@ -47,9 +47,9 @@ static void draw_hello_str(void) {
 static void draw_screen0(void) {
   ESP_LOGI(TAG, "Screen0");
   EventBits_t state_changes = xEventGroupGetBits(xEvents);
-  if (state_changes & BIT_WIFI_CHANGE_STATE) {
+  if (state_changes & WIFI_CHANGE_STATE) {
     yg_draw_header();
-    xEventGroupClearBits(xEvents, BIT_WIFI_CHANGE_STATE);
+    xEventGroupClearBits(xEvents, WIFI_CHANGE_STATE);
   } else
     printf("no wifi data change");
 }

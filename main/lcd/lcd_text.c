@@ -321,10 +321,8 @@ esp_err_t draw_ascii_char_fast(lcd_device_t *dev, int16_t x, int16_t y, unsigned
   uint16_t pixel_size = size_x * size_y;
   uint32_t pixels = 6 * 8 * pixel_size;
   uint8_t bytes_per_pixel = 2;
-  uint8_t *char_buffer = malloc(bytes_per_pixel * pixels);
+  uint8_t char_buffer[bytes_per_pixel * pixels];
   uint8_t double_size_x = 2 * size_x;
-  if (char_buffer == NULL)
-    return ESP_OK;
 
   for (int8_t current_x = 0; current_x < 5; current_x++) { // read by columns: 5x columns with data and space 1x column
     uint8_t line = font[c * 5 + current_x];
@@ -348,7 +346,7 @@ esp_err_t draw_ascii_char_fast(lcd_device_t *dev, int16_t x, int16_t y, unsigned
     color_list_to_bytes(char_buffer + offset, double_size_x, bg_color, size_x);
   }
   ESP_ERROR_CHECK_WITH_INTERRUPT(frame_fill(dev, x, x + 6 * size_x - 1, y, y + 8 * size_y - 1, char_buffer, bytes_per_pixel * pixels, 1));
-  free(char_buffer);
+  //free(char_buffer);
   return ESP_OK;
 }
 
@@ -357,9 +355,7 @@ esp_err_t draw_monospace_text(lcd_device_t *dev, ascii_text_frame_t *text_frame,
   uint16_t index = 0;
   size_t str_len = strlen(text);
   str_len = (str_len < max_length) ? str_len : max_length;
-  char *dest = malloc(str_len);
-  if (dest == NULL)
-    return ESP_OK;
+  char dest[str_len];
   utf8_to_extended_ascii_codes(dest, text, str_len);
   str_len = strlen(dest);
   text_frame->current_x = max(text_frame->current_x ,text_frame->x0);
@@ -386,6 +382,5 @@ esp_err_t draw_monospace_text(lcd_device_t *dev, ascii_text_frame_t *text_frame,
     }
     index += 1;
   }
-  free(dest);
   return ESP_OK;
 }

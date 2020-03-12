@@ -35,6 +35,15 @@ ui_states_t ui_lookup_transitions( ui_states_t state, enum ret_codes_t code ) {
   return UI_UNKNOWN_STATE;
 }
 
+void lookup_input_events(uint32_t xTimeInMs) {
+    btns_event_t event;
+    if (xQueueReceive(kbrd_evnt_queue, &event, pdMS_TO_TICKS ( xTimeInMs ))) {
+      if (current_input_handler != NULL )  {
+        current_input_handler(event);
+      } else ESP_LOGI( TAG, "NULL pointer input handler");
+    }
+}
+
 enum ret_codes_t ui_error_view( void ) {
   // show error for a short time (?) and switch to init
   ESP_LOGE(TAG, "ERROR in UI");

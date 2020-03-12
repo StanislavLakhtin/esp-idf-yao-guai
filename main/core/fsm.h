@@ -12,7 +12,7 @@
 
 typedef enum ret_codes_t ( * state_fptr_t ) ( void );
 
-enum ret_codes_t { FSM_OK, FSM_FAIL, FSM_REPEAT };
+enum ret_codes_t { FSM_OK, FSM_FAIL, FSM_REPEAT, UI_WIFI_SCAN, UI_BACK };
 
 #ifndef ESP32_YAO_GUAI_WEATHER_FIRMWARE_FSM_H
 #define ESP32_YAO_GUAI_WEATHER_FIRMWARE_FSM_H

@@ -47,7 +47,7 @@ io_event_listener_fptr_t current_input_handler;
 static const char * TAG = "ui";
 
 #define LISTEN_IO_MS( xTimeInMs ) do { \
-  btns_event_t event; \
+    btns_event_t event; \
     if (xQueueReceive(kbrd_evnt_queue, &event, pdMS_TO_TICKS ( xTimeInMs ))) { \
       if (current_input_handler != NULL )  {\
         current_input_handler(event); \
@@ -67,6 +67,7 @@ enum ret_codes_t ui_error_view( void );
 enum ret_codes_t ui_settings_view( void );
 
 ui_states_t ui_lookup_transitions(ui_states_t state, enum ret_codes_t code );
+void lookup_input_events(uint32_t xTimeInMs);
 
 void ui0_listener( btns_event_t event );
 void menu_input_listener( btns_event_t event );

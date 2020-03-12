@@ -44,13 +44,8 @@ enum ret_codes_t init_state( void ) {
 }
 
 enum ret_codes_t find_ap_state( void ) {
-  if (ap_info != NULL) {
-    ESP_LOGI( TAG, "Clean previous WiFi scan");
-    free(ap_info);
-    ap_info = NULL;
-    ap_cnt = 0x00;
-  }
-  ap_info = malloc(sizeof(wifi_ap_record_t) * DEFAULT_AP_LIST_SIZE);
+  ESP_LOGI( TAG, "Clean previous WiFi scan");
+  memset(ap_info, 0x00, sizeof(wifi_ap_record_t) * DEFAULT_AP_LIST_SIZE);
   ESP_ERROR_CHECK(wifi_scan(ap_info, &ap_cnt));
   ESP_LOGI( TAG, "Total APs scanned = %u", ap_cnt);
   for (int i = 0; i < ap_cnt; i++) {
@@ -69,7 +64,7 @@ enum ret_codes_t connect_ap_state( void ) {
 }
 
 enum ret_codes_t process_messages_state( void ) {
-  ESP_LOGI( TAG, "Process messages to MQTT broker" );
+  //ESP_LOGI( TAG, "Process messages to MQTT broker" );
   return FSM_REPEAT;
 }
 

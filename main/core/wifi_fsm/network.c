@@ -60,7 +60,6 @@ esp_err_t wifi_start_station() {
 esp_err_t wifi_init() {
   ESP_LOGI( TAG, "Initializing WiFi" );
   ap_cnt = 0x00;
-  ap_info = NULL;
   if (netif != NULL) {
     esp_netif_destroy(netif);
   }

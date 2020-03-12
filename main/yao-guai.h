@@ -43,8 +43,8 @@ extern const uint8_t mqtt_eclipse_org_pem_start[]   asm("_binary_mqtt_eclipse_or
 #endif
 extern const uint8_t mqtt_eclipse_org_pem_end[]   asm("_binary_mqtt_eclipse_org_pem_end");
 
-#define BIT_WIFI_CHANGE_STATE  ( 1 << 0 )
-#define BIT_WIFI_CONNECTED     ( 1 << 1 )
+#define WIFI_CHANGE_STATE  BIT(0)
+#define WIFI_SCAN          BIT(1)
 
 EventGroupHandle_t xEvents;
 

@@ -40,6 +40,7 @@ typedef struct {
 #define UNKNOWN_STATE init
 
 EventGroupHandle_t s_connect_event_group;
+
 esp_ip4_addr_t s_ip_addr;
 char * current_connection_name;
 
@@ -51,7 +52,7 @@ char * current_connection_name;
 
 static const char* TAG = "wifi";
 uint16_t ap_cnt;
-wifi_ap_record_t * ap_info;
+wifi_ap_record_t ap_info[DEFAULT_AP_LIST_SIZE];
 esp_netif_t * netif;
 
 #define GOT_IPV4_BIT BIT(0)   // IPv4

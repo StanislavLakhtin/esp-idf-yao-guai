@@ -28,14 +28,14 @@ void IRAM_ATTR encoder_isr_handler(void* arg) {
       }
       break;
     case rotate_left_begin:
-      if (!r_pin) {
+      if (!r_pin && !l_pin) {
         btns_event_t event = ENCODER0_ROTATE_LEFT;
         xQueueSendFromISR(kbrd_evnt_queue, &event, NULL);
         encoder->state = rotate_finish;
       }
       break;
     case rotate_right_begin:
-      if (!l_pin) {
+      if (!l_pin && !l_pin) {
         btns_event_t event = ENCODER0_ROTATE_RIGHT;
         xQueueSendFromISR(kbrd_evnt_queue, &event, NULL);
         encoder->state = rotate_finish;
