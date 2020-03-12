@@ -24,11 +24,9 @@ static void lines_test ( void ) {
   }
 }
 
-static void rect
-
 void yg_lcd_demo_view( void ) {
-
-  LISTEN_IO_MS(5000);
+  ESP_LOGI(TAG, "lines DEMO Screen");
+  color_t bg , c;
   set_color(bg, 0,0,0);
   fill_rect(lcd_dev, 0, 0, lcd_dev->width,  lcd_dev->height, &bg);
   for (int i = 0; i < lcd_dev->height / 2; i += 4 ){

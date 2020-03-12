@@ -315,11 +315,7 @@ esp_err_t draw_ascii_char(lcd_device_t *dev, int16_t x, int16_t y, unsigned char
 esp_err_t draw_ascii_char_fast(lcd_device_t *dev, int16_t x, int16_t y, unsigned char c,
                                color_t * text_color, color_t * bg_color, ascii_font_size_t size_x,
                                ascii_font_size_t size_y) {
-  if (((x + 6 * size_x) >= dev->width)
-      || ((y + 8 * size_y) >= dev->height))
-    return ESP_OK;
-
-  if (size_x > 4 || size_y > 4 || size_x < 1 || size_y < 1)  // Wrong array size
+  if (((x + 6 * size_x) >= dev->width) || ((y + 8 * size_y) >= dev->height))
     return ESP_OK;
 
   uint16_t pixel_size = size_x * size_y;
@@ -370,8 +366,9 @@ esp_err_t draw_monospace_text(lcd_device_t *dev, ascii_text_frame_t *text_frame,
   text_frame->current_y = max(text_frame->current_y , text_frame->y0);
   while (index < str_len) {
     if ((text_frame->current_x + size_x * 6 > text_frame->x1) ||
-        (text_frame->current_y + text_frame->row_height * size_y > text_frame->y1))
+        (text_frame->current_y + text_frame->row_height * size_y > text_frame->y1)) {
       return ESP_OK;
+    }
     if (dest[index] == '\n') {
       text_frame->current_x = text_frame->x0;
       text_frame->current_y += text_frame->row_height * size_y;

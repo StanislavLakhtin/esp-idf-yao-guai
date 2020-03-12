@@ -30,7 +30,7 @@ static const char * menu[MENU_CNT] = {
     "About"
 };
 
-static const size_t max_sym_cnt() {
+static size_t max_sym_cnt() {
   size_t mx = 0;
   for (int i = 0; i < MENU_CNT; i++) {
     size_t str_len = strlen(menu[i]);
@@ -53,12 +53,12 @@ static void draw_menu( void ) {
   uint16_t padding = 4;
   uint16_t margin = 8;
   uint16_t delta_x = lcd_dev->width / 2 - header_size_x * 6 * ( max_sym_cnt() / 2 );
-  uint16_t btn_height = header_size_y * 8 + padding * 2 + border_sz * 2;
+  uint16_t btn_height = header_size_y * DEFAULT_ROW_HEIGHT + padding * 2 + border_sz * 2 + 1;    // 1 -- empty line above symbols
   uint16_t y_offset = (lcd_dev->height - btn_height * MENU_CNT - margin * MENU_CNT) / 2;
   color_t c, bg, brdr_clr;
   set_color(c, 0xff, 0xff, 0xff);
   set_color(brdr_clr, 0x33, 0x00, 0x00);
-  for (int i = 0 ; i < 1; i++) {
+  for (int i = 0 ; i < MENU_CNT; i++) {
     ascii_text_frame_t btn_frame = {
         .x0 = delta_x,
         .y0 = y_offset,
@@ -104,7 +104,7 @@ enum ret_codes_t ui_settings_view( void ) {
   do {
     view_method = screens[scrn_indx];
     view_method();
-    LISTEN_IO_MS(30000);
+    LISTEN_IO_MS(300000);
   } while (r_code == FSM_REPEAT);
   return r_code;
 }

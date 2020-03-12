@@ -28,7 +28,7 @@
 #define false 0x00
 #endif
 
-#define DEFAULT_ROW_HEIGHT 9
+#define DEFAULT_ROW_HEIGHT 8
 
 typedef enum {
   // utf8 0xd0 prefix
