@@ -58,6 +58,7 @@ void yg_lcd_demo_view( void ) {
     set_color(c, colors[0],colors[1], colors[2]);
     draw_monospace_text(lcd_dev, &ascii_frame, &ch, 1, &c, &bg, normal, normal);
   }
+  LISTEN_IO_MS(5000);
   set_color(bg, 0,0, 0);
   fill_rect(lcd_dev, 0, 0, lcd_dev->width,  lcd_dev->height, &bg);
   ascii_frame.current_x = 4;

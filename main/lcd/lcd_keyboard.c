@@ -16,6 +16,13 @@
     the absence of checks on the time of execution.
 */
 
-#include "lcd.h"
+#include "lcd_keyboard.h"
 
+esp_err_t draw_keyboard(lcd_device_t * dev, encoder_keyboard_t * kbrd) {
+  // draw current symbol width / 2 - main_symbol_width / 2
+  uint16_t main_symbol_width = kbrd->width / 2 - MAIN_SYMBOL_SIZE_X * 6;
+  uint16_t x = kbrd->x0 + ( main_symbol_width / 2);
+  draw_ascii_char_fast(dev, x, kbrd->y0, SYMBOLS[kbrd->position], kbrd->color, kbrd->bg_color, MAIN_SYMBOL_SIZE_X, MAIN_SYMBOL_SIZE_Y);
+  return ESP_OK;
+}
 
