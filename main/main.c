@@ -41,6 +41,7 @@ void IRAM_ATTR encoder_isr_handler(void* arg) {
         encoder->state = rotate_finish;
       }
       break;
+    default:
     case rotate_finish:
       if (r_pin && l_pin) {
         encoder->state = dormancy;

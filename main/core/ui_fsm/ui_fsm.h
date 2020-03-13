@@ -21,13 +21,14 @@
 #define ESP32_YAO_GUAI_WEATHER_FIRMWARE_UI_FSM_H
 
 #include "../fsm.h"
-#include "lcd/lcd_driver.h"
+#include "lcd/lcd.h"
 #include "lcd_spi_driver/esp32_lcd_spi_driver.h"
 
 typedef enum  { // MUST BE THE SAME FSM ORDER as in ui loop task
   error = 0,
   idle = 1,
   settings = 2,
+  scan_complete = 3,
 } ui_states_t;
 
 typedef void (* screen_view_fptr_t )(void);
@@ -65,14 +66,17 @@ extern "C"
 enum ret_codes_t ui_idle_view( void );
 enum ret_codes_t ui_error_view( void );
 enum ret_codes_t ui_settings_view( void );
+enum ret_codes_t ui_settings_scan_complete( void );
 
 ui_states_t ui_lookup_transitions(ui_states_t state, enum ret_codes_t code );
 void lookup_input_events(uint32_t xTimeInMs);
 
 void ui0_listener( btns_event_t event );
 void menu_input_listener( btns_event_t event );
+void ui_wifi_scan_complete_listener( btns_event_t event );
 
 void yg_draw_header( void );
+void yg_draw_settings_menu_bg( void );
 void yg_lcd_demo_view( void );
 
 #ifdef __cplusplus

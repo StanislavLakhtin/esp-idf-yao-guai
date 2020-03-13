@@ -24,6 +24,7 @@ static const ui_transition_t ui_states[] = {
     { idle,     FSM_FAIL, error },
     { settings, FSM_OK,   settings },
     { settings, FSM_FAIL, error },
+    { settings, UI_WIFI_SCAN_COMPLETE, scan_complete },
     { error,    FSM_OK,   idle }};
 
 

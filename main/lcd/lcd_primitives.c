@@ -16,7 +16,7 @@
     the absence of checks on the time of execution.
 */
 
-#include "lcd_driver.h"
+#include "lcd.h"
 
 esp_err_t draw_pixel(lcd_device_t *dev, uint16_t x, uint16_t y, color_t * color) {
   if (x >= dev->width || y >= dev->height)

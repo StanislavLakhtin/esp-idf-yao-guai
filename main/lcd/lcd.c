@@ -16,7 +16,7 @@
     the absence of checks on the time of execution.
 */
 
-#include "lcd_driver.h"
+#include "lcd.h"
 
 static const char *TAG;
 static const char *ST_TAG = "ST7789V";

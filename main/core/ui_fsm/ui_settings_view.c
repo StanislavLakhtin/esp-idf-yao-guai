@@ -21,13 +21,12 @@
 static uint8_t scrn_indx = 0x00;
 static uint8_t menu_indx = 0x00;
 
-enum ret_codes_t r_code = FSM_REPEAT;
+static enum ret_codes_t r_code = FSM_REPEAT;
 
 static screen_view_fptr_t view_method;
 
 static void draw_menu(void);
 static void draw_scan_wifi(void);
-static void wait_scan_wifi(void);
 static void scan_wifi_input_listener(btns_event_t event);
 
 #define MENU_CNT 4
@@ -38,7 +37,7 @@ static const char *menu[MENU_CNT] = {
     "Back"
 };
 
-#define SCREEN_CNT 2
+#define SCREEN_CNT 4
 #define SCREEN_SCAN_WIFI 1
 static const screen_view_fptr_t screens[SCREEN_CNT] = {draw_menu, draw_scan_wifi, NULL, NULL};
 
@@ -50,12 +49,6 @@ static size_t max_sym_cnt() {
       mx = str_len;
   }
   return mx;
-}
-
-static void yg_draw_settings_menu_bg(void) {
-  color_t bg;
-  set_color(bg, 44, 44, 44);
-  fill_rect(lcd_dev, 0, 0, lcd_dev->width, lcd_dev->height, &bg);
 }
 
 static void draw_menu(void) {
@@ -84,7 +77,7 @@ static void draw_menu(void) {
       set_color(bg, 55, 0x55, 0x55);
     else
       set_color(bg, 0xaa, 0xaa, 0xaa);
-    char *button_name = menu[i];
+    const char *button_name = menu[i];
     draw_button(lcd_dev, &btn_frame, button_name, strlen(button_name), &c, &bg, &brdr_clr, border_sz, padding,
                 header_size_x, header_size_y);
     y_offset += btn_height + margin;
@@ -110,7 +103,7 @@ static void draw_scan_wifi(void) {
   while (bits & WIFI_SCAN) {
     bits = xEventGroupGetBits(xEvents);
   }
-  scrn_indx = 0;
+  r_code = UI_WIFI_SCAN_COMPLETE;
 }
 
 void menu_input_listener(btns_event_t event) {

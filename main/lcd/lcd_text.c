@@ -16,7 +16,7 @@
     the absence of checks on the time of execution.
 */
 
-#include "lcd_driver.h"
+#include "lcd.h"
 
 // Standard / Cyrillic ASCII 5x7 font
 

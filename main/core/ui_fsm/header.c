@@ -18,6 +18,12 @@
 
 #include "ui_fsm.h"
 
+void yg_draw_settings_menu_bg(void) {
+  color_t bg;
+  set_color(bg, 44, 44, 44);
+  fill_rect(lcd_dev, 0, 0, lcd_dev->width, lcd_dev->height, &bg);
+}
+
 void yg_draw_header( void ) {
   char wifi_str[40];
   ESP_LOGI( TAG, "header" );

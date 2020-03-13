@@ -20,11 +20,13 @@
 
 static const state_fptr_t ui_states_fn[] = { ui_error_view,
                                              ui_idle_view,
-                                             ui_settings_view };
+                                             ui_settings_view,
+                                             ui_settings_scan_complete };
 
 static const io_event_listener_fptr_t default_handlers[] = { NULL,
                                                              ui0_listener,
-                                                             menu_input_listener};
+                                                             menu_input_listener,
+                                                             ui_wifi_scan_complete_listener};
 
 lcd_device_t ui_dev = { .width = 320, .height = 240,
     .write_cmnd = &spi_write_lcd_cmnd,

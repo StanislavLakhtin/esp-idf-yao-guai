@@ -22,7 +22,7 @@
 #include "driver/gpio.h"
 #include "esp_log.h"
 #include "peripherials.h"
-#include "lcd/lcd_driver.h"
+#include "lcd/lcd.h"
 
 #ifdef __cplusplus
 extern "C"
