@@ -26,11 +26,18 @@ static enum ret_codes_t r_code = FSM_REPEAT;
 static screen_view_fptr_t view_method;
 
 static size_t max_sym_cnt() {
-  return 32;
+  size_t mx = 0;
+  for (int i = 0; i < ap_cnt; i++) {
+    char * _str = (char *) ap_info[i].ssid;
+    size_t str_len = strlen(_str);
+    if (str_len > mx)
+      mx = str_len;
+  }
+  return mx;
 }
 
 static void select_ap(void) {
-  /*ascii_font_size_t header_size_x = normal;
+  ascii_font_size_t header_size_x = normal;
   ascii_font_size_t header_size_y = normal;
   uint16_t border_sz = 2;
   uint16_t padding = 4;
@@ -59,7 +66,7 @@ static void select_ap(void) {
     draw_button(lcd_dev, &btn_frame, button_name, strlen(button_name), &c, &bg, &brdr_clr, border_sz, padding,
                 header_size_x, header_size_y);
     y_offset += btn_height + margin;
-  }*/
+  }
   ESP_LOGI(TAG, "%d ap station should draw", ap_cnt);
 }
 
