@@ -21,8 +21,10 @@ typedef struct {
   color_t * bg_color;
 } encoder_keyboard_t;
 
-#define MAIN_SYMBOL_SIZE_X big
-#define MAIN_SYMBOL_SIZE_Y big
+#define MAIN_SYMBOL_SIZE_X      big
+#define MAIN_SYMBOL_SIZE_Y      big
+#define MAIN_SYMBOL_STEP_X_TO_LOW 3
+#define MAIN_SYMBOL_STEP_Y_TO_LOW 6
 
 #ifdef __cplusplus
 extern "C"

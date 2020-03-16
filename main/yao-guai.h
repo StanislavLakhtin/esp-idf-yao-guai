@@ -34,6 +34,9 @@ typedef struct {
   sdmmc_card_t *sd_card;
 } conf_t;
 
+uint16_t ap_cnt;
+wifi_ap_record_t ap_info[DEFAULT_AP_LIST_SIZE];
+
 xQueueHandle kbrd_evnt_queue;
 
 #if CONFIG_BROKER_CERTIFICATE_OVERRIDDEN == 1

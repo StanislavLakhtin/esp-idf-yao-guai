@@ -51,8 +51,6 @@ char * current_connection_name;
   } while (0)
 
 static const char* TAG = "wifi";
-uint16_t ap_cnt;
-wifi_ap_record_t ap_info[DEFAULT_AP_LIST_SIZE];
 esp_netif_t * netif;
 
 #define GOT_IPV4_BIT BIT(0)   // IPv4
