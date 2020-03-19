@@ -16,7 +16,7 @@
     the absence of checks on the time of execution.
 */
 
-#include "lcd.h"
+#include "lcd/lcd.h"
 
 esp_err_t draw_button(lcd_device_t *dev, ascii_text_frame_t *frame, const char * text, size_t max_text_length,
                       color_t * color, color_t * bg_color, color_t * brdr_color,uint8_t border_sz, uint16_t padding,

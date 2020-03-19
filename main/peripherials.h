@@ -57,7 +57,7 @@
 // SDCard pins
 
 #ifndef SPI_SDCARD_CS
-#define SPI_SDCARD_CS 5
+#define SPI_SDCARD_CS 2
 #endif
 
 // BTNS pins

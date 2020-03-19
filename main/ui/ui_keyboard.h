@@ -2,11 +2,11 @@
 // Created by Stanislav Lakhtin on 13/03/2020.
 //
 
-#ifndef ESP32_YAO_GUAI_WEATHER_FIRMWARE_LCD_KEYBOARD_H
-#define ESP32_YAO_GUAI_WEATHER_FIRMWARE_LCD_KEYBOARD_H
+#ifndef ESP32_YAO_GUAI_WEATHER_FIRMWARE_UI_KEYBOARD_H
+#define ESP32_YAO_GUAI_WEATHER_FIRMWARE_UI_KEYBOARD_H
 
-#include "fonts.h"
-#include "lcd.h"
+#include "lcd/fonts.h"
+#include "lcd/lcd.h"
 
 static const char* SYMBOLS = "0123456789" "abcdefghijklmnopqrstuvwxyz" "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -39,4 +39,4 @@ esp_err_t move_right(lcd_device_t * dev, encoder_keyboard_t * keyboard);
 }
 #endif
 
-#endif //ESP32_YAO_GUAI_WEATHER_FIRMWARE_LCD_KEYBOARD_H
+#endif //ESP32_YAO_GUAI_WEATHER_FIRMWARE_UI_KEYBOARD_H

@@ -16,7 +16,7 @@
     the absence of checks on the time of execution.
 */
 
-#include "lcd_keyboard.h"
+#include "ui_keyboard.h"
 
 esp_err_t draw_keyboard(lcd_device_t * dev, encoder_keyboard_t * kbrd) {
   // draw current symbol width / 2 - main_symbol_width / 2

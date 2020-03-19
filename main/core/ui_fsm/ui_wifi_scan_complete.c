@@ -71,7 +71,17 @@ static void select_ap(void) {
 }
 
 void ui_wifi_scan_complete_listener(btns_event_t event) {
-  ESP_LOGI(TAG, "%c", event);
+  ESP_LOGI(TAG, "BUTTON: %c", event);
+  switch (event) {
+    case ENCODER0_PRESS:
+      esp_restart();
+      break;
+    case ENCODER0_ROTATE_RIGHT:
+    case ENCODER0_ROTATE_LEFT:
+    default:
+      ESP_LOGI(TAG, "%c", event);
+      break;
+  }
 }
 
 #define SCREEN_CNT 1
