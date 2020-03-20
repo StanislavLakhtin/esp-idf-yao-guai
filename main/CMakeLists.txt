@@ -1,11 +1,6 @@
-idf_component_register( SRC_DIRS "./btns"
-                                 "./ow"
+idf_component_register( SRC_DIRS "./ow"
                                  "./ow_uart_driver"
-                                 "./lcd"
-                                 "./lcd_spi_driver"
-                                 "./ui"
                                  "./core"
                                  "./core/wifi_fsm"
-                                 "./core/ui_fsm"
                                  "."
                         INCLUDE_DIRS ".")

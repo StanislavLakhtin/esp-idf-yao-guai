@@ -3,4 +3,7 @@
 cmake_minimum_required(VERSION 3.5)
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
+
+set(EXTRA_COMPONENT_DIRS externals/lv_port_esp32/components)
+
 project(esp32-yao-guai-weather-firmware)
