@@ -9,70 +9,8 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 #include "yao-guai.h"
-#include "btns/yao_guai_btns.h"
 
 static const char * TAG = "LOADER";
-
-void IRAM_ATTR encoder_isr_handler(void* arg) {
-  encoder_t * encoder = arg;
-  //TickType_t tick = xTaskGetTickCountFromISR();
-  int l_pin, r_pin;
-  l_pin = gpio_get_level(encoder->l_pin);
-  r_pin = gpio_get_level(encoder->r_pin);
-  switch (encoder->state) {
-    case dormancy:
-      if (r_pin && !l_pin) {
-        encoder->state = rotate_left_begin;
-      } else if (!r_pin && l_pin) {
-        encoder->state = rotate_right_begin;
-      }
-      break;
-    case rotate_left_begin:
-      if (!r_pin && !l_pin) {
-        btns_event_t event = ENCODER0_ROTATE_LEFT;
-        xQueueSendFromISR(kbrd_evnt_queue, &event, NULL);
-        encoder->state = rotate_finish;
-      }
-      break;
-    case rotate_right_begin:
-      if (!l_pin && !l_pin) {
-        btns_event_t event = ENCODER0_ROTATE_RIGHT;
-        xQueueSendFromISR(kbrd_evnt_queue, &event, NULL);
-        encoder->state = rotate_finish;
-      }
-      break;
-    default:
-    case rotate_finish:
-      if (r_pin && l_pin) {
-        encoder->state = dormancy;
-      }
-      break;
-  }
-}
-
-void IRAM_ATTR buttons_isr_handler(void* arg) {
-  button_t * button = arg;
-  int gpio = gpio_get_level(button->pin);
-  TickType_t tick;
-  switch (button->state) {
-    case BTN_IDLE:
-      tick = xTaskGetTickCountFromISR();
-      if (!gpio && (tick - button->last_update > BUTTON_PRESS_THRESHOLD) ) {
-        btns_event_t event = button->on_press_event;
-        xQueueSendFromISR(kbrd_evnt_queue, &event, NULL);
-        button->state = BTN_ON_PRESS;
-        button->last_update = tick;
-      }
-      break;
-    case BTN_ON_PRESS:
-      if (gpio) {
-        btns_event_t event = button->on_release_event;
-        xQueueSendFromISR(kbrd_evnt_queue, &event, NULL);
-        button->state = BTN_IDLE;
-      }
-      break;
-  }
-}
 
 #define WIFI_PROIRITY     5
 #define ONEWIRE_PROIRITY  6
