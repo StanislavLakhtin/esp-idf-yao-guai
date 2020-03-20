@@ -8,4 +8,4 @@ clion.build/
 cmake-build-debug
 build
 clion.build
-sdkconfig*
+sdkconfig
