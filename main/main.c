@@ -9,7 +9,6 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 #include "yao-guai.h"
-#include "lvgl.h"
 
 static const char * TAG = "LOADER";
 
@@ -18,9 +17,6 @@ static const char * TAG = "LOADER";
 #define UI_PROIRITY       7
 
 void app_main(void) {
-
-  conf_t conf;
-  conf_init(&conf);
 
   // Initialize NVS
   esp_err_t ret = nvs_flash_init();

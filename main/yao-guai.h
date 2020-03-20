@@ -11,9 +11,9 @@
 #include "freertos/task.h"
 #include "freertos/semphr.h"
 
-#include "driver/sdmmc_defs.h"
 #include "driver/gpio.h"
-#include "peripherials.h"
+
+#include "lvgl.h"
 #include "nvs_flash.h"
 
 #include "esp_log.h"
@@ -22,16 +22,9 @@
 #include "esp_ota_ops.h"
 #include "esp_event.h"
 
-#include <sdmmc_cmd.h>
-
 #include "ow_uart_driver/ow_uart_driver.h"
 
 #define DEFAULT_AP_LIST_SIZE 22
-
-typedef struct {
-  SemaphoreHandle_t inUse;
-  sdmmc_card_t *sd_card;
-} conf_t;
 
 uint16_t ap_cnt;
 wifi_ap_record_t ap_info[DEFAULT_AP_LIST_SIZE];
@@ -66,19 +59,10 @@ extern "C"
 {
 #endif
 
-// --------------- Init ----------------
-void conf_init(conf_t * conf);
-
 // --------------- Tasks ---------------
 void ow_periodically_scan_task(void *arg);
 void main_connection_task(void *arg);
 void ui_task(void *arg);
-
-// SD-Card
-esp_err_t sdcard_session_start(conf_t *conf);
-esp_err_t sdcard_session_finish(conf_t *conf);
-esp_err_t is_ssid_conf_exists(conf_t *conf, const char * ssid);
-esp_err_t get_ap_password(conf_t *conf, char *ap_name, char *password_buffer);
 
 #ifdef __cplusplus
 }
