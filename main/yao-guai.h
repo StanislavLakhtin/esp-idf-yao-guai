@@ -10,14 +10,13 @@
 #include "freertos/event_groups.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h"
+
 #include "driver/sdmmc_defs.h"
 #include "driver/gpio.h"
 #include "peripherials.h"
-
 #include "nvs_flash.h"
 
 #include "esp_log.h"
-
 #include "esp_netif.h"
 #include "esp_tls.h"
 #include "esp_ota_ops.h"
@@ -80,10 +79,6 @@ esp_err_t sdcard_session_start(conf_t *conf);
 esp_err_t sdcard_session_finish(conf_t *conf);
 esp_err_t is_ssid_conf_exists(conf_t *conf, const char * ssid);
 esp_err_t get_ap_password(conf_t *conf, char *ap_name, char *password_buffer);
-
-//Buttons
-void IRAM_ATTR encoder_isr_handler(void* arg);
-void IRAM_ATTR buttons_isr_handler(void* arg);
 
 #ifdef __cplusplus
 }

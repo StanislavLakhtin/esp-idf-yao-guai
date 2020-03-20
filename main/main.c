@@ -9,6 +9,7 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 #include "yao-guai.h"
+#include "lvgl.h"
 
 static const char * TAG = "LOADER";
 
