@@ -6,15 +6,8 @@
 #ifndef ESP32_YAO_GUAI_WEATHER_FIRMWARE_YAO_GUAI_H
 #define ESP32_YAO_GUAI_WEATHER_FIRMWARE_YAO_GUAI_H
 
-#include "freertos/FreeRTOS.h"
-#include "freertos/event_groups.h"
-#include "freertos/task.h"
-#include "freertos/semphr.h"
-
-#include "driver/gpio.h"
-
-#include "lvgl.h"
 #include "nvs_flash.h"
+#include "driver/gpio.h"
 
 #include "esp_log.h"
 #include "esp_netif.h"
@@ -22,7 +15,13 @@
 #include "esp_ota_ops.h"
 #include "esp_event.h"
 
+#include "freertos/FreeRTOS.h"
+#include "freertos/event_groups.h"
+#include "freertos/task.h"
+#include "freertos/semphr.h"
+
 #include "ow_uart_driver/ow_uart_driver.h"
+#include "lvgl.h"
 
 #define DEFAULT_AP_LIST_SIZE 22
 
