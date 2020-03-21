@@ -10,6 +10,7 @@
 */
 #include "yao-guai.h"
 #include "nvs_flash.h"
+#include "rotary_encoder.h"
 
 static const char * TAG = "LOADER";
 

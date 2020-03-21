@@ -1,0 +1,21 @@
+menu "Rotary-encoder configuration"
+
+config ROT_ENC_A_GPIO
+    int "Rotary Encoder A output GPIO number"
+	range 0 39
+	default 22
+	help
+		GPIO number (IOxx) from which to sample the Rotary Encoder 'A' output.
+
+		Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used.
+
+config ROT_ENC_B_GPIO
+    int "Rotary Encoder B output GPIO number"
+	range 0 39
+	default 19
+	help
+		GPIO number (IOxx) from which to sample the Rotary Encoder 'B' output.
+
+		Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used.
+
+endmenu
