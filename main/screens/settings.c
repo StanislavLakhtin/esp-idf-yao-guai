@@ -15,11 +15,16 @@ void construct_settings_screen(void) {
   lv_win_set_title(setting_win, "Settings");
   g = lv_group_create();
   lv_group_set_focus_cb(g, group_focus_cb);
-  /*Add control button to the header*/
+  /* Add EXIT control button to the header */
   lv_obj_t * close_btn = lv_win_add_btn(setting_win, LV_SYMBOL_CLOSE);
-  lv_obj_set_event_cb(close_btn, lv_win_close_event);
+  lv_obj_set_event_cb(close_btn, event_cb);
   lv_group_add_obj(g, close_btn);
   lv_indev_set_group(encoder_indev, g);
+  lv_obj_t * obj;
+  obj = lv_spinbox_create(setting_win, NULL);
+  //lv_obj_set_event_cb(obj, event_cb);
+  lv_spinbox_set_digit_format(obj, 5, 2);
+  lv_group_add_obj(g, obj);
 }
 
 static void group_focus_cb(lv_group_t * group)
@@ -28,33 +33,33 @@ static void group_focus_cb(lv_group_t * group)
   if(f != setting_win) lv_win_focus(setting_win, f, LV_ANIM_ON);
 }
 
-void lv_win_close_event(lv_obj_t * obj, lv_event_t event) {
+void event_cb(lv_obj_t * obj, lv_event_t event) {
   switch (event) {
-    case LV_EVENT_PRESSED:
-      printf("Pressed\n");
+    case LV_KEY_ENTER:
+      printf("ENTER\n");
       break;
 
-    case LV_EVENT_SHORT_CLICKED:
-      printf("Short clicked\n");
+    case LV_KEY_LEFT:
+      printf("LEFT\n");
       break;
 
-    case LV_EVENT_CLICKED:
-      printf("Clicked\n");
+    case LV_KEY_RIGHT:
+      printf("RIGHT\n");
       break;
 
-    case LV_EVENT_LONG_PRESSED:
-      printf("Long press\n");
+    case LV_KEY_NEXT:
+      printf("NEXT\n");
       break;
 
-    case LV_EVENT_LONG_PRESSED_REPEAT:
-      printf("Long press repeat\n");
+    case LV_KEY_PREV:
+      printf("PREV\n");
       break;
 
-    case LV_EVENT_RELEASED:
-      printf("Released\n");
+    case LV_INDEV_STATE_PR:
+      printf("LV_INDEV_STATE_PR\n");
       break;
 
     default:
-      printf("Unknown event\n");
+      printf("Unknown event %02x \n", event);
   }
 }

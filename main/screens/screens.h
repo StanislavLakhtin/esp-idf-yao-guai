@@ -15,7 +15,7 @@ extern "C"
 
 void construct_settings_screen(void);
 
-void lv_win_close_event (lv_obj_t * obj, lv_event_t event);
+void event_cb (lv_obj_t * obj, lv_event_t event);
 
 #ifdef __cplusplus
 }

@@ -36,13 +36,20 @@ static void IRAM_ATTR lv_tick_task(void) {
   lv_tick_inc(portTICK_RATE_MS);
 }
 
+static bool encoder0_holded = false;
+
 static bool read_encoder(lv_indev_drv_t * indev, lv_indev_data_t * data) {
   btns_event_t event;
   if (xQueueReceive(kbrd_evnt_queue, &event, 0)) {
     ESP_LOGI(TAG, "%c", event);
     switch (event) {
       case ENCODER0_PRESS:
-        data->enc_diff = LV_KEY_ENTER;
+        data->state = LV_INDEV_STATE_PR;
+        encoder0_holded = true;
+        break;
+      case ENCODER0_RELEASE:
+        data->state = LV_INDEV_STATE_REL;
+        encoder0_holded = false;
         break;
       case ENCODER0_ROTATE_LEFT:
         data->enc_diff = LV_KEY_LEFT;
@@ -51,10 +58,11 @@ static bool read_encoder(lv_indev_drv_t * indev, lv_indev_data_t * data) {
         data->enc_diff = LV_KEY_RIGHT;
         break;
       default:
-      case ENCODER0_RELEASE:
         break;
     }
-    return true;
+    return true; // check if another event in a queue
+  } else if (encoder0_holded) {
+    data->state = LV_INDEV_STATE_PR;
   }
   return false;
 }
@@ -88,10 +96,10 @@ void ui_task(void * args ) {
 	lv_indev_drv_register(&indev_drv);
 #endif
 
+  construct_settings_screen();
+
   esp_register_freertos_tick_hook(lv_tick_task);
   ESP_LOGI( TAG, "Hello world from Yao GUAI [meteo]station.\n" );
-
-  construct_settings_screen();
 
   loop {
     vTaskDelay(1);
