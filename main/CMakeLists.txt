@@ -5,6 +5,8 @@ idf_component_register( SRC_DIRS "ow"
                                 "screens"
                                  "."
                         INCLUDE_DIRS "."
+                                     "screens"
+                                     "core"
                         REQUIRES nvs_flash lvgl lvgl_esp32_drivers lvgl_tft
 )
 

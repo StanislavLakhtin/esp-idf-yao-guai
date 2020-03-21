@@ -15,12 +15,15 @@
     This library is a compromise in this matter. The main goal is to ensure the speed of execution and
     the absence of checks on the time of execution.
 */
+#include <buttons_encoders.h>
 #include "yao-guai.h"
 
 #include "esp_freertos_hooks.h"
 
 #include "lvgl.h"
 #include "lvgl_driver.h"
+
+#include "screens.h"
 
 /**********************
  *  STATIC VARIABLES
@@ -29,10 +32,31 @@ static const char * TAG = "ui";
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-static void demo(void);
-
 static void IRAM_ATTR lv_tick_task(void) {
   lv_tick_inc(portTICK_RATE_MS);
+}
+
+static bool read_encoder(lv_indev_drv_t * indev, lv_indev_data_t * data) {
+  btns_event_t event;
+  if (xQueueReceive(kbrd_evnt_queue, &event, 0)) {
+    ESP_LOGI(TAG, "%c", event);
+    switch (event) {
+      case ENCODER0_PRESS:
+        data->enc_diff = LV_KEY_ENTER;
+        break;
+      case ENCODER0_ROTATE_LEFT:
+        data->enc_diff = LV_KEY_LEFT;
+        break;
+      case ENCODER0_ROTATE_RIGHT:
+        data->enc_diff = LV_KEY_RIGHT;
+        break;
+      default:
+      case ENCODER0_RELEASE:
+        break;
+    }
+    return true;
+  }
+  return false;
 }
 
 void ui_task(void * args ) {
@@ -51,6 +75,11 @@ void ui_task(void * args ) {
   disp_drv.buffer = &disp_buf;
   lv_disp_drv_register(&disp_drv);
 
+  lv_indev_drv_init(&encoder_drv);
+  encoder_drv.type = LV_INDEV_TYPE_ENCODER;
+  encoder_drv.read_cb = read_encoder;
+  encoder_indev = lv_indev_drv_register(&encoder_drv);
+
 #if CONFIG_LVGL_TOUCH_CONTROLLER != TOUCH_CONTROLLER_NONE
   lv_indev_drv_t indev_drv;
 	lv_indev_drv_init(&indev_drv);
@@ -62,17 +91,10 @@ void ui_task(void * args ) {
   esp_register_freertos_tick_hook(lv_tick_task);
   ESP_LOGI( TAG, "Hello world from Yao GUAI [meteo]station.\n" );
 
-  demo();
+  construct_settings_screen();
 
   loop {
     vTaskDelay(1);
     lv_task_handler();
   };
 }
-
-lv_style_t btn3_style;
-
-static void demo(void) {
-
-}
-

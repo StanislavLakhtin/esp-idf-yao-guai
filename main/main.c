@@ -32,6 +32,7 @@ button_t encoder_btn;
 
 void IRAM_ATTR encoder_isr_handler(void* arg) {
   encoder_t * encoder = arg;
+  //todo make full FSM machine
   //TickType_t tick = xTaskGetTickCountFromISR();
   int l_pin, r_pin;
   l_pin = gpio_get_level(encoder->l_pin);
@@ -47,14 +48,15 @@ void IRAM_ATTR encoder_isr_handler(void* arg) {
     case rotate_left_begin:
       if (!r_pin && !l_pin) {
         btns_event_t event = ENCODER0_ROTATE_LEFT;
-        xQueueOverwriteFromISR(kbrd_evnt_queue, &event, NULL);
+        //xQueueOverwriteFromISR(kbrd_evnt_queue, &event, NULL);
+        xQueueSendFromISR(kbrd_evnt_queue, &event, NULL);
         encoder->state = rotate_finish;
       }
       break;
     case rotate_right_begin:
       if (!l_pin && !l_pin) {
         btns_event_t event = ENCODER0_ROTATE_RIGHT;
-        xQueueOverwriteFromISR(kbrd_evnt_queue, &event, NULL);
+        xQueueSendFromISR(kbrd_evnt_queue, &event, NULL);
         encoder->state = rotate_finish;
       }
       break;
