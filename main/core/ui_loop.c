@@ -25,14 +25,11 @@
 /**********************
  *  STATIC VARIABLES
  **********************/
-static lv_obj_t * slider;
 static const char * TAG = "ui";
 /**********************
  *  STATIC PROTOTYPES
  **********************/
 static void demo(void);
-static void btn_event_cb(lv_obj_t * btn, lv_event_t event);
-static void ddlist_event_cb(lv_obj_t * ddlist, lv_event_t event);
 
 static void IRAM_ATTR lv_tick_task(void) {
   lv_tick_inc(portTICK_RATE_MS);
@@ -73,119 +70,96 @@ void ui_task(void * args ) {
   };
 }
 
-/**********************
- *   STATIC FUNCTIONS
- **********************/
+static void demo(void) {
+  lv_obj_t * scr = lv_disp_get_scr_act(NULL);     /*Get the current screen*/
 
-/**
- * Called when a button is released
- * @param btn pointer to the released button
- * @param event the triggering event
- * @return LV_RES_OK because the object is not deleted in this function
- */
-static void btn_event_cb(lv_obj_t * btn, lv_event_t event)
-{
-  if(event == LV_EVENT_RELEASED) {
-    /*Increase the button width*/
-    lv_coord_t width = lv_obj_get_width(btn);
-    lv_obj_set_width(btn, width + 20);
-  }
-}
+  /****************************************
+   * BASE OBJECT + LABEL WITH DEFAULT STYLE
+   ****************************************/
+  /*Create a simple objects*/
+  lv_obj_t * obj1;
+  obj1 = lv_obj_create(scr, NULL);
+  lv_obj_set_pos(obj1, 10, 10);
 
-/**
- * Called when a new option is chosen in the drop down list
- * @param ddlist pointer to the drop down list
- * @param event the triggering event
- * @return LV_RES_OK because the object is not deleted in this function
- */
-static  void ddlist_event_cb(lv_obj_t * ddlist, lv_event_t event)
-{
-  if(event == LV_EVENT_VALUE_CHANGED) {
-    uint16_t opt = lv_ddlist_get_selected(ddlist);            /*Get the id of selected option*/
+  /*Add a label to the object*/
+  lv_obj_t * label;
+  label = lv_label_create(obj1, NULL);
+  lv_label_set_text(label, "Default");
+  lv_obj_align(label, NULL, LV_ALIGN_CENTER, 0, 0);
 
-    lv_slider_set_value(slider, (opt * 100) / 4, true);       /*Modify the slider value according to the selection*/
-  }
+  /****************************************
+   * BASE OBJECT WITH 'PRETTY COLOR' STYLE
+   ****************************************/
+  /*Create a simple objects*/
+  lv_obj_t * obj2;
+  obj2 = lv_obj_create(scr, NULL);
+  lv_obj_align(obj2, obj1, LV_ALIGN_OUT_RIGHT_MID, 20, 0);    /*Align next to the previous object*/
+  lv_obj_set_style(obj2, &lv_style_pretty);                   /*Set built in style*/
 
-}
+  /* Add a label to the object.
+   * Labels by default inherit the parent's style */
+  label = lv_label_create(obj2, NULL);
+  lv_label_set_text(label, "Pretty\nstyle");
+  lv_obj_align(label, NULL, LV_ALIGN_CENTER, 0, 0);
 
-void demo(void) {
-  /********************
-   * CREATE A SCREEN
-   *******************/
-  /* Create a new screen and load it
-   * Screen can be created from any type object type
-   * Now a Page is used which is an objects with scrollable content*/
-  lv_obj_t * scr = lv_page_create(NULL, NULL);
-  lv_disp_load_scr(scr);
+  /*****************************
+   * BASE OBJECT WITH NEW STYLE
+   *****************************/
+  /* Create a new style */
+  static lv_style_t style_new;                         /*Styles can't be local variables*/
+  lv_style_copy(&style_new, &lv_style_pretty);         /*Copy a built-in style as a starting point*/
+  style_new.body.radius = 1;//LV_RADIUS_CIRCLE;            /*Fully round corners*/
+  style_new.body.main_color = LV_COLOR_WHITE;          /*White main color*/
+  style_new.body.grad_color = LV_COLOR_BLUE;           /*Blue gradient color*/
+  style_new.body.shadow.color = LV_COLOR_SILVER;       /*Light gray shadow color*/
+  style_new.body.shadow.width = 2;                     /*8 px shadow*/
+  style_new.body.border.width = 1;                     /*2 px border width*/
+  style_new.text.color = LV_COLOR_RED;                 /*Red text color */
 
-  /****************
-   * ADD A TITLE
-   ****************/
-  lv_obj_t * label = lv_label_create(scr, NULL); /*First parameters (scr) is the parent*/
-  lv_label_set_text(label, "Object usage demo");  /*Set the text*/
-  lv_obj_set_x(label, 10);                        /*Set the x coordinate*/
+  /*Create a base object and apply the new style*/
+  lv_obj_t * obj3;
+  obj3 = lv_obj_create(scr, NULL);
+  lv_obj_align(obj3, obj2, LV_ALIGN_OUT_RIGHT_MID, 20, 0);
+  lv_obj_set_style(obj3, &style_new);
 
-  /***********************
-   * CREATE TWO BUTTONS
+  /* Add a label to the object.
+   * Labels by default inherit the parent's style */
+  label = lv_label_create(obj3, NULL);
+  lv_label_set_text(label, "New\nstyle");
+  lv_obj_align(label, NULL, LV_ALIGN_CENTER, 0, 0);
+
+
+  /************************
+   * CREATE A STYLED BAR
    ***********************/
-  /*Create a button*/
-  lv_obj_t * btn1 = lv_btn_create(lv_disp_get_scr_act(NULL), NULL);         /*Create a button on the currently loaded screen*/
-  lv_obj_set_event_cb(btn1, btn_event_cb);                                  /*Set function to be called when the button is released*/
-  lv_obj_set_height(btn1, 30);
-  lv_obj_align(btn1, label, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 10);               /*Align below the label*/
+  /* Create a bar background style */
+  static lv_style_t style_bar_bg;
+  lv_style_copy(&style_bar_bg, &lv_style_pretty);
+  style_bar_bg.body.radius = 2;
+  style_bar_bg.body.opa = LV_OPA_TRANSP;                  /*Empty (not filled)*/
+  style_bar_bg.body.border.color = LV_COLOR_GRAY;         /*Gray border color*/
+  style_bar_bg.body.border.width = 1;                     /*2 px border width*/
+  style_bar_bg.body.border.opa = LV_OPA_COVER;
 
-  /*Create a label on the button (the 'label' variable can be reused)*/
-  label = lv_label_create(btn1, NULL);
-  lv_label_set_text(label, "Ok");
+  /* Create a bar indicator style */
+  static lv_style_t style_bar_indic;
+  lv_style_copy(&style_bar_indic, &lv_style_pretty);
+  style_bar_indic.body.radius = 2;
+  style_bar_indic.body.main_color = LV_COLOR_GRAY;          /*White main color*/
+  style_bar_indic.body.grad_color = LV_COLOR_GRAY;           /*Blue gradient color*/
+  style_bar_indic.body.border.width = 0;                     /*2 px border width*/
+  style_bar_indic.body.padding.left = 2;
+  style_bar_indic.body.padding.right = 2;
+  style_bar_indic.body.padding.top = 2;
+  style_bar_indic.body.padding.bottom = 2;
 
-  /*Copy the previous button*/
-  lv_obj_t * btn2 = lv_btn_create(scr, btn1);                 /*Second parameter is an object to copy*/
-  lv_obj_align(btn2, btn1, LV_ALIGN_OUT_RIGHT_MID, 20, 0);    /*Align next to the prev. button.*/
-
-  /*Create a label on the button*/
-  label = lv_label_create(btn2, NULL);
-  lv_label_set_text(label, "Lookup up");
-
-  /****************
-   * ADD A SLIDER
-   ****************/
-  slider = lv_slider_create(scr, NULL);                            /*Create a slider*/
-  lv_obj_set_size(slider, lv_obj_get_width(scr)  / 3, LV_DPI / 3);            /*Set the size*/
-  lv_obj_align(slider, btn1, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 20);                /*Align below the first button*/
-  lv_slider_set_value(slider, 30, false);                                            /*Set the current value*/
-
-  /***********************
-   * ADD A DROP DOWN LIST
-   ************************/
-  lv_obj_t * ddlist = lv_ddlist_create(scr, NULL);                     /*Create a drop down list*/
-  lv_obj_align(ddlist, slider, LV_ALIGN_OUT_RIGHT_TOP, 50, 0);         /*Align next to the slider*/
-  lv_obj_set_top(ddlist, true);                                        /*Enable to be on the top when clicked*/
-  lv_ddlist_set_options(ddlist, "None\nLittle\nHalf\nA lot\nAll");     /*Set the options*/
-  lv_obj_set_event_cb(ddlist, ddlist_event_cb);                        /*Set function to call on new option is chosen*/
-
-  /****************
-   * CREATE A CHART
-   ****************/
-  lv_obj_t * chart = lv_chart_create(scr, NULL);                         /*Create the chart*/
-  lv_obj_set_size(chart, lv_obj_get_width(scr) / 2, lv_obj_get_width(scr) / 4);   /*Set the size*/
-  lv_obj_align(chart, slider, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 50);                   /*Align below the slider*/
-  lv_chart_set_series_width(chart, 3);                                            /*Set the line width*/
-
-  /*Add a RED data series and set some points*/
-  lv_chart_series_t * dl1 = lv_chart_add_series(chart, LV_COLOR_RED);
-  lv_chart_set_next(chart, dl1, 10);
-  lv_chart_set_next(chart, dl1, 25);
-  lv_chart_set_next(chart, dl1, 45);
-  lv_chart_set_next(chart, dl1, 80);
-
-  /*Add a BLUE data series and set some points*/
-  lv_chart_series_t * dl2 = lv_chart_add_series(chart, lv_color_make(0x40, 0x70, 0xC0));
-  lv_chart_set_next(chart, dl2, 10);
-  lv_chart_set_next(chart, dl2, 25);
-  lv_chart_set_next(chart, dl2, 45);
-  lv_chart_set_next(chart, dl2, 80);
-  lv_chart_set_next(chart, dl2, 75);
-  lv_chart_set_next(chart, dl2, 505);
+  /*Create a bar and apply the styles*/
+  lv_obj_t * bar = lv_bar_create(scr, NULL);
+  lv_bar_set_style(bar, LV_BAR_STYLE_BG, &style_bar_bg);
+  lv_bar_set_style(bar, LV_BAR_STYLE_INDIC, &style_bar_indic);
+  lv_bar_set_value(bar, 70, false);
+  lv_obj_set_size(bar, 200, 20);
+  lv_obj_align(bar, obj1, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 20);
 
 }
 
