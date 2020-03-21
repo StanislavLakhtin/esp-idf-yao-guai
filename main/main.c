@@ -9,6 +9,7 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 #include "yao-guai.h"
+#include "nvs_flash.h"
 
 static const char * TAG = "LOADER";
 
@@ -17,7 +18,6 @@ static const char * TAG = "LOADER";
 #define UI_PROIRITY       7
 
 void app_main(void) {
-
   // Initialize NVS
   esp_err_t ret = nvs_flash_init();
   if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -30,18 +30,19 @@ void app_main(void) {
 
   ESP_ERROR_CHECK(ow_uart_driver_init());
 
+  /* Print chip information */
   esp_chip_info_t chip_info;
-  esp_chip_info( &chip_info );
-  ESP_LOGI( TAG, "This is %s chip with %d CPU cores, WiFi%s%s, ",
-            CHIP_NAME,
-            chip_info.cores,
-            ( chip_info.features & CHIP_FEATURE_BT ) ? "/BT" : "",
-            ( chip_info.features & CHIP_FEATURE_BLE ) ? "/BLE" : "" );
+  esp_chip_info(&chip_info);
+  printf("This is %s chip with %d CPU cores, WiFi%s%s, ",
+         CONFIG_IDF_TARGET,
+         chip_info.cores,
+         (chip_info.features & CHIP_FEATURE_BT) ? "/BT" : "",
+         (chip_info.features & CHIP_FEATURE_BLE) ? "/BLE" : "");
 
-  ESP_LOGI( TAG, "silicon revision %d, ", chip_info.revision );
+  printf("silicon revision %d, ", chip_info.revision);
 
-  ESP_LOGI( TAG, "%dMB %s flash\n", spi_flash_get_chip_size() / ( 1024 * 1024 ),
-            ( chip_info.features & CHIP_FEATURE_EMB_FLASH ) ? "embedded" : "external" );
+  printf("%dMB %s flash\n", spi_flash_get_chip_size() / (1024 * 1024),
+         (chip_info.features & CHIP_FEATURE_EMB_FLASH) ? "embedded" : "external");
 
   xEvents = xEventGroupCreate();
   if ( xEvents == NULL ) {

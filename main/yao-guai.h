@@ -6,19 +6,16 @@
 #ifndef ESP32_YAO_GUAI_WEATHER_FIRMWARE_YAO_GUAI_H
 #define ESP32_YAO_GUAI_WEATHER_FIRMWARE_YAO_GUAI_H
 
-#include "nvs_flash.h"
-#include "driver/gpio.h"
-
-#include "esp_log.h"
-#include "esp_netif.h"
-#include "esp_tls.h"
-#include "esp_ota_ops.h"
-#include "esp_event.h"
-
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h"
+
+#include "esp_log.h"
+#include "esp_netif.h"
+#include "esp_event.h"
+#include "esp_system.h"
+#include "driver/gpio.h"
 
 #include "ow_uart_driver/ow_uart_driver.h"
 #include "lvgl.h"
