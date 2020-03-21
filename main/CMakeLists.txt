@@ -5,7 +5,7 @@ idf_component_register( SRC_DIRS "ow"
                                 "screens"
                                  "."
                         INCLUDE_DIRS "."
-                        REQUIRES nvs_flash lvgl lvgl_esp32_drivers lvgl_tft rotary_encoder
+                        REQUIRES nvs_flash lvgl lvgl_esp32_drivers lvgl_tft
 )
 
 target_compile_definitions(${COMPONENT_LIB} PRIVATE LV_CONF_INCLUDE_SIMPLE=1)
