@@ -1,9 +1,9 @@
 //
-// Created by sl on 05.03.2020.
+// Created by sl on 22.03.2020.
 //
 
-#ifndef YAO_GUAI_BUTTONS_ENCODERS_H
-#define YAO_GUAI_BUTTONS_ENCODERS_H
+#ifndef YAO_GUAI_ROTARY_ENCODER_H
+#define YAO_GUAI_ROTARY_ENCODER_H
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
@@ -11,6 +11,15 @@
 #include "freertos/semphr.h"
 #include "driver/sdmmc_defs.h"
 #include "driver/gpio.h"
+
+// BTNS pins
+
+#define GPIO_INPUT_ENCODER_0    35
+#define GPIO_INPUT_ENCODER_1    33
+#define GPIO_INPUT_ENCODER_BTN  34
+#define GPIO_INPUT_PIN_SEL      ((1ULL<<GPIO_INPUT_ENCODER_0) | (1ULL<<GPIO_INPUT_ENCODER_1) | (1ULL<<GPIO_INPUT_ENCODER_BTN))
+
+#define ESP_INTR_FLAG_DEFAULT 0
 
 typedef enum {
   rotate_left_begin,
@@ -48,6 +57,19 @@ typedef struct {
   TickType_t last_update;
 } button_t;
 
+xQueueHandle event_queue;
+
 #define BUTTON_PRESS_THRESHOLD 10
 
-#endif //YAO_GUAI_BUTTONS_ENCODERS_H
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+void encoders_conf(xQueueHandle evnt_queue);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif //YAO_GUAI_ROTARY_ENCODER_H

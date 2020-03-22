@@ -15,7 +15,7 @@
     This library is a compromise in this matter. The main goal is to ensure the speed of execution and
     the absence of checks on the time of execution.
 */
-#include <buttons_encoders.h>
+#include "rotary_encoder.h"
 #include "yao-guai.h"
 
 #include "esp_freertos_hooks.h"
@@ -40,7 +40,7 @@ static bool encoder0_holded = false;
 
 static bool read_encoder(lv_indev_drv_t * indev, lv_indev_data_t * data) {
   btns_event_t event;
-  if (xQueueReceive(kbrd_evnt_queue, &event, 0)) {
+  if (xQueueReceive(event_queue, &event, 0)) {
     ESP_LOGI(TAG, "%c", event);
     switch (event) {
       case ENCODER0_PRESS:

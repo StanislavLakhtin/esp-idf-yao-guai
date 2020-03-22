@@ -25,8 +25,6 @@
 uint16_t ap_cnt;
 wifi_ap_record_t ap_info[DEFAULT_AP_LIST_SIZE];
 
-xQueueHandle kbrd_evnt_queue;
-
 #if CONFIG_BROKER_CERTIFICATE_OVERRIDDEN == 1
 static const uint8_t mqtt_eclipse_org_pem_start[]  = "-----BEGIN CERTIFICATE-----\n" CONFIG_BROKER_CERTIFICATE_OVERRIDE "\n-----END CERTIFICATE-----";
 #else
