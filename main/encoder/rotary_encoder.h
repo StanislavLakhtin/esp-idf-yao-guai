@@ -22,25 +22,26 @@
 #define ESP_INTR_FLAG_DEFAULT 0
 
 typedef enum {
-  rotate_left_begin,
-  rotate_right_begin,
-  rotate_finish,
-  dormancy
+  BTN_ON_PRESS,
+  BTN_IDLE
+} button_state_t;
+
+typedef enum {
+  ENCODER_IDLE = 0,
+  LEFT_ROTATION_BEGIN = 1,
+  RIGHT_ROTATION_BEGIN = 2,
+  LEFT_ROTATION_ZERO_STATE = 3,
+  RIGHT_ROTATION_ZERO_STATE = 4,
+  LEFT_ROTATION_PRE_END = 5,
+  RIGHT_ROTATION_PRE_END = 6,
+  UNDEFINED_ZERO_STATE = 7,
 } encoder_state_t;
 
 typedef struct {
   gpio_num_t l_pin;
   gpio_num_t r_pin;
   encoder_state_t state;
-  TickType_t last_update;
 } encoder_t;
-
-typedef  enum {
-  BTN_ON_PRESS,
-//  BTN_ON_RELEASE,
-//  BTN_ON_HOLD,
-  BTN_IDLE
-} button_state_t;
 
 typedef enum {
   ENCODER0_ROTATE_LEFT = '<',
@@ -48,6 +49,14 @@ typedef enum {
   ENCODER0_PRESS = 'e',
   ENCODER0_RELEASE = 'E',
 } btns_event_t;
+
+typedef encoder_state_t ( *encoder_state_fsm_fptr_t)(int l_pin, int r_pin);
+
+typedef struct {
+  encoder_state_t from;
+  encoder_state_t to;
+  btns_event_t * event;
+} encoder_fsm_transition_t;
 
 typedef struct {
   gpio_num_t pin;
