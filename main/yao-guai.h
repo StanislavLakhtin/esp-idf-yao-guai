@@ -20,6 +20,8 @@
 #include "ow_uart_driver/ow_uart_driver.h"
 #include "lvgl.h"
 
+#include "ui_loop.h"
+
 #define DEFAULT_AP_LIST_SIZE 22
 
 uint16_t ap_cnt;

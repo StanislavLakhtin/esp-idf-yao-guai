@@ -15,12 +15,11 @@
     This library is a compromise in this matter. The main goal is to ensure the speed of execution and
     the absence of checks on the time of execution.
 */
-#include "rotary_encoder.h"
 #include "yao-guai.h"
 
-#include "esp_freertos_hooks.h"
+#include "rotary_encoder.h"
 
-#include "lvgl.h"
+#include "esp_freertos_hooks.h"
 #include "lvgl_driver.h"
 
 #include "screens.h"
@@ -96,12 +95,24 @@ void ui_task(void * args ) {
 	lv_indev_drv_register(&indev_drv);
 #endif
 
-  construct_settings_screen();
-
   esp_register_freertos_tick_hook(lv_tick_task);
   ESP_LOGI( TAG, "Hello world from Yao GUAI [meteo]station.\n" );
-
+  ui_screen_state_t prev_ui_screen = UNKNOWN;
+  ui_screen = SETTINGS;
   loop {
+    if (ui_screen != prev_ui_screen) {
+      prev_ui_screen = ui_screen;
+      switch (ui_screen) {
+        case SETTINGS:
+          construct_settings_screen();
+          break;
+        case SHOW_SCANNED_APS:
+          construct_scanned_aps_screen();
+          break;
+        default:
+          break;
+      }
+    }
     vTaskDelay(1);
     lv_task_handler();
   };

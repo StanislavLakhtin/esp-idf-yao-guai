@@ -10,7 +10,10 @@ void IRAM_ATTR encoder_isr_handler(void *arg) {
   int r_pin = gpio_get_level(encoder->r_pin);
   switch (encoder->state) {
     case ENCODER_IDLE:
-      encoder->state = (!l_pin) ? LEFT_ROTATION_BEGIN : RIGHT_ROTATION_BEGIN;
+      if (!l_pin && r_pin)
+        encoder->state = LEFT_ROTATION_BEGIN;
+      if (l_pin && !r_pin)
+        encoder->state = RIGHT_ROTATION_BEGIN;
       break;
     case LEFT_ROTATION_BEGIN:
       if (!r_pin) {
