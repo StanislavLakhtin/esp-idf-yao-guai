@@ -31,8 +31,14 @@ static const encoder_fsm_transition_t encoder_fsm_transition[ENCODER_TRANSITION_
 };
 
 static const encoder_state_fsm_fptr_t fsm_cb[] = {
-    idle_cb, left_rot_beg_cb, right_rot_beg_cb,
-    left_rot_zero_cb, right_rot_zero_cb, left_rot_pre_cb, right_rot_pre_cb, undefined_zero_cb};
+    idle_cb,              // 0
+    left_rot_beg_cb,      // 1
+    right_rot_beg_cb,     // 2
+    left_rot_zero_cb,     // 3
+    right_rot_zero_cb,    // 4
+    left_rot_pre_cb,      // 5
+    right_rot_pre_cb,     // 6
+    undefined_zero_cb};   // 7
 
 encoder_state_t idle_cb(int l_pin, int r_pin) {
   if (!l_pin && !r_pin)
@@ -120,7 +126,7 @@ void encoders_conf(xQueueHandle queue) {
   gpio_conf.pull_up_en = 1;
   gpio_config(&gpio_conf);
 
-  encoder_t encoder0 = {
+  encoder_t encoder = {
       .l_pin = GPIO_INPUT_ENCODER_0,
       .r_pin = GPIO_INPUT_ENCODER_1,
       .state = ENCODER_IDLE
@@ -134,7 +140,7 @@ void encoders_conf(xQueueHandle queue) {
   };
 
   gpio_install_isr_service(ESP_INTR_FLAG_DEFAULT);
-  gpio_isr_handler_add(encoder0.l_pin, encoder_isr_handler, &encoder0);
-  gpio_isr_handler_add(encoder0.r_pin, encoder_isr_handler, &encoder0);
+  gpio_isr_handler_add(encoder.l_pin, encoder_isr_handler, &encoder);
+  gpio_isr_handler_add(encoder.r_pin, encoder_isr_handler, &encoder);
   gpio_isr_handler_add(GPIO_INPUT_ENCODER_BTN, buttons_isr_handler, &encoder_btn);
 }
