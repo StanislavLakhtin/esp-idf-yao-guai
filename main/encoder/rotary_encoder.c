@@ -4,92 +4,29 @@
 
 #include "rotary_encoder.h"
 
-static encoder_state_t idle_cb(int l_pin, int r_pin);
-static encoder_state_t left_rot_beg_cb(int l_pin, int r_pin);
-static encoder_state_t right_rot_beg_cb(int l_pin, int r_pin);
-static encoder_state_t left_rot_zero_cb(int l_pin, int r_pin);
-static encoder_state_t right_rot_zero_cb(int l_pin, int r_pin);
-static encoder_state_t left_rot_pre_cb(int l_pin, int r_pin);
-static encoder_state_t right_rot_pre_cb(int l_pin, int r_pin);
-static encoder_state_t undefined_zero_cb(int l_pin, int r_pin);
-
-#define ENCODER_TRANSITION_STATES 11
-static btns_event_t ROTATE_LEFT = ENCODER0_ROTATE_LEFT;
-static btns_event_t ROTATE_RIGHT = ENCODER0_ROTATE_RIGHT;
-static const encoder_fsm_transition_t encoder_fsm_transition[ENCODER_TRANSITION_STATES] = {
-    {ENCODER_IDLE,              LEFT_ROTATION_BEGIN,       NULL},
-    {ENCODER_IDLE,              RIGHT_ROTATION_BEGIN,      NULL},
-    {ENCODER_IDLE,              UNDEFINED_ZERO_STATE,      NULL},
-    {LEFT_ROTATION_BEGIN,       LEFT_ROTATION_ZERO_STATE,  NULL},
-    {LEFT_ROTATION_ZERO_STATE,  LEFT_ROTATION_PRE_END,     NULL},
-    {LEFT_ROTATION_PRE_END,     ENCODER_IDLE, &ROTATE_LEFT},
-    {RIGHT_ROTATION_BEGIN,      RIGHT_ROTATION_ZERO_STATE, NULL},
-    {RIGHT_ROTATION_ZERO_STATE, RIGHT_ROTATION_PRE_END,    NULL},
-    {RIGHT_ROTATION_PRE_END,    ENCODER_IDLE, &ROTATE_RIGHT},
-    {UNDEFINED_ZERO_STATE,      LEFT_ROTATION_PRE_END,     NULL},
-    {UNDEFINED_ZERO_STATE,      RIGHT_ROTATION_PRE_END,    NULL},
-};
-
-static const encoder_state_fsm_fptr_t fsm_cb[] = {
-    idle_cb,              // 0
-    left_rot_beg_cb,      // 1
-    right_rot_beg_cb,     // 2
-    left_rot_zero_cb,     // 3
-    right_rot_zero_cb,    // 4
-    left_rot_pre_cb,      // 5
-    right_rot_pre_cb,     // 6
-    undefined_zero_cb};   // 7
-
-encoder_state_t idle_cb(int l_pin, int r_pin) {
-  if (!l_pin && !r_pin)
-    return UNDEFINED_ZERO_STATE;
-  return (!l_pin && r_pin) ? LEFT_ROTATION_BEGIN : RIGHT_ROTATION_BEGIN;
-}
-
-encoder_state_t left_rot_beg_cb(int l_pin, int r_pin) {
-  return (!l_pin && !r_pin) ? LEFT_ROTATION_ZERO_STATE : ENCODER_IDLE;
-}
-
-encoder_state_t right_rot_beg_cb(int l_pin, int r_pin) {
-  return (!l_pin && !r_pin) ? RIGHT_ROTATION_ZERO_STATE : ENCODER_IDLE;
-}
-
-encoder_state_t left_rot_zero_cb(int l_pin, int r_pin) {
-  return (l_pin && !r_pin) ? LEFT_ROTATION_PRE_END : ENCODER_IDLE;
-}
-
-encoder_state_t right_rot_zero_cb(int l_pin, int r_pin) {
-  return (!l_pin && r_pin) ? RIGHT_ROTATION_PRE_END : ENCODER_IDLE;
-}
-
-encoder_state_t left_rot_pre_cb(int l_pin, int r_pin) {
-  return ENCODER_IDLE;
-}
-
-encoder_state_t right_rot_pre_cb(int l_pin, int r_pin) {
-  return ENCODER_IDLE;
-}
-
-encoder_state_t undefined_zero_cb(int l_pin, int r_pin) {
-  return (!l_pin && r_pin) ? RIGHT_ROTATION_PRE_END : LEFT_ROTATION_PRE_END;
-}
-
 void IRAM_ATTR encoder_isr_handler(void *arg) {
   encoder_t *encoder = arg;
-  //TickType_t tick = xTaskGetTickCountFromISR();
-  encoder_state_fsm_fptr_t fn = fsm_cb[encoder->state];
-  encoder_state_t new_state = fn(gpio_get_level(encoder->l_pin), gpio_get_level(encoder->r_pin));
-  for (uint8_t i = 0; i < ENCODER_TRANSITION_STATES; i++) {
-    encoder_fsm_transition_t tr = encoder_fsm_transition[i];
-    if (tr.from == encoder->state && tr.to == new_state) {
-      encoder->state = new_state;
-      if (tr.event != NULL) {
-        xQueueSendFromISR(event_queue, tr.event, NULL);
+  int l_pin = gpio_get_level(encoder->l_pin);
+  int r_pin = gpio_get_level(encoder->r_pin);
+  switch (encoder->state) {
+    case ENCODER_IDLE:
+      encoder->state = (!l_pin) ? LEFT_ROTATION_BEGIN : RIGHT_ROTATION_BEGIN;
+      break;
+    case LEFT_ROTATION_BEGIN:
+      if (!r_pin) {
+        btns_event_t event = encoder->on_left;
+        xQueueSendFromISR(event_queue, &event, NULL);
+        encoder->state = ENCODER_IDLE;
       }
-      return;
-    }
+      break;
+    case RIGHT_ROTATION_BEGIN:
+      if (!l_pin) {
+        btns_event_t event = encoder->on_right;
+        xQueueSendFromISR(event_queue, &event, NULL);
+        encoder->state = ENCODER_IDLE;
+      }
+      break;
   }
-  encoder->state = ENCODER_IDLE;
 }
 
 void IRAM_ATTR buttons_isr_handler(void *arg) {
@@ -116,31 +53,38 @@ void IRAM_ATTR buttons_isr_handler(void *arg) {
   }
 }
 
-void encoders_conf(xQueueHandle queue) {
-  event_queue = queue;
+button_t encoder_btn;
+encoder_t encoder0;
+
+void encoders_conf() {
+  event_queue = xQueueCreate(5, sizeof(btns_event_t));
 
   gpio_config_t gpio_conf;
-  gpio_conf.intr_type = GPIO_INTR_ANYEDGE;
+  gpio_conf.intr_type = GPIO_INTR_NEGEDGE;
   gpio_conf.pin_bit_mask = GPIO_INPUT_PIN_SEL;
   gpio_conf.mode = GPIO_MODE_INPUT;
   gpio_conf.pull_up_en = 1;
   gpio_config(&gpio_conf);
-
-  encoder_t encoder = {
-      .l_pin = GPIO_INPUT_ENCODER_0,
-      .r_pin = GPIO_INPUT_ENCODER_1,
-      .state = ENCODER_IDLE
-  };
-
-  button_t encoder_btn = {
-      .pin = GPIO_INPUT_ENCODER_BTN,
-      .state = BTN_IDLE,
-      .on_press_event = ENCODER0_PRESS,
-      .on_release_event = ENCODER0_RELEASE
-  };
-
   gpio_install_isr_service(ESP_INTR_FLAG_DEFAULT);
-  gpio_isr_handler_add(encoder.l_pin, encoder_isr_handler, &encoder);
-  gpio_isr_handler_add(encoder.r_pin, encoder_isr_handler, &encoder);
-  gpio_isr_handler_add(GPIO_INPUT_ENCODER_BTN, buttons_isr_handler, &encoder_btn);
+
+  button_init(&encoder_btn, GPIO_INPUT_ENCODER_BTN, ENCODER0_PRESS, ENCODER0_RELEASE);
+  encoder_init(&encoder0, GPIO_INPUT_ENCODER_0, GPIO_INPUT_ENCODER_1, ENCODER0_ROTATE_LEFT, ENCODER0_ROTATE_RIGHT);
+}
+
+void button_init(button_t * btn, gpio_num_t pin, btns_event_t on_press, btns_event_t on_release) {
+  btn->pin = pin;
+  btn->state = BTN_IDLE;
+  btn->on_press_event = on_press;
+  btn->on_release_event = on_release;
+  gpio_isr_handler_add(pin, buttons_isr_handler, btn);
+}
+
+void encoder_init(encoder_t * encoder, gpio_num_t l_pin, gpio_num_t r_pin, btns_event_t on_left, btns_event_t on_right) {
+  encoder->l_pin = l_pin;
+  encoder->r_pin = r_pin;
+  encoder->state = ENCODER_IDLE;
+  encoder->on_left = on_left;
+  encoder->on_right = on_right;
+  gpio_isr_handler_add(encoder->l_pin, encoder_isr_handler, encoder);
+  gpio_isr_handler_add(encoder->r_pin, encoder_isr_handler, encoder);
 }

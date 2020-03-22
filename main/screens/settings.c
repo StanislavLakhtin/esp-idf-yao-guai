@@ -21,7 +21,7 @@ void construct_settings_screen(void) {
   setting_win = lv_win_create(lv_scr_act(), NULL);
   lv_win_set_title(setting_win, "Settings");
   g = lv_group_create();
-  //lv_group_set_focus_cb(g, group_focus_cb);
+  lv_group_set_focus_cb(g, group_focus_cb);
   /* Add EXIT control button to the header */
   lv_obj_t * _btn = lv_win_add_btn(setting_win, LV_SYMBOL_CLOSE);
   lv_obj_set_event_cb(_btn, event_cb);
@@ -29,10 +29,13 @@ void construct_settings_screen(void) {
   lv_indev_set_group(encoder_indev, g);
   lv_obj_t * obj;
   obj = lv_list_create(setting_win, NULL);
+  lv_obj_align(obj, setting_win, LV_ALIGN_CENTER, 0, 0);
   _btn = lv_list_add_btn(obj, LV_SYMBOL_WIFI, "Scan WiFi");
   lv_obj_set_height(_btn, 32);
   lv_obj_set_event_cb(_btn, wifi_scan_event_cb);
   _btn = lv_list_add_btn(obj, LV_SYMBOL_EDIT, "Edit known APs");
+  lv_obj_set_event_cb(_btn, edit_ap_event_cb);
+  _btn = lv_list_add_btn(obj, LV_SYMBOL_DRIVE, "SDCard");
   lv_obj_set_event_cb(_btn, edit_ap_event_cb);
   lv_group_add_obj(g, obj);
 }
@@ -75,7 +78,7 @@ void event_cb(lv_obj_t * obj, lv_event_t event) {
       printf("LV_EVENT_CLICKED\n");
       break;
 
-    case LV_EVENT_FOCUSED:
+    /*case LV_EVENT_FOCUSED:
       printf("LV_EVENT_FOCUSED\n");
       break;
 
@@ -84,6 +87,6 @@ void event_cb(lv_obj_t * obj, lv_event_t event) {
       break;
 
     default:
-      printf("Unknown event 0x%02x (%02d) \n", event, event);
+      printf("Unknown event 0x%02x (%02d) \n", event, event);*/
   }
 }

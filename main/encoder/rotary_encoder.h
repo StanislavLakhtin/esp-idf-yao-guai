@@ -30,18 +30,7 @@ typedef enum {
   ENCODER_IDLE = 0,
   LEFT_ROTATION_BEGIN = 1,
   RIGHT_ROTATION_BEGIN = 2,
-  LEFT_ROTATION_ZERO_STATE = 3,
-  RIGHT_ROTATION_ZERO_STATE = 4,
-  LEFT_ROTATION_PRE_END = 5,
-  RIGHT_ROTATION_PRE_END = 6,
-  UNDEFINED_ZERO_STATE = 7,
 } encoder_state_t;
-
-typedef struct {
-  gpio_num_t l_pin;
-  gpio_num_t r_pin;
-  encoder_state_t state;
-} encoder_t;
 
 typedef enum {
   ENCODER0_ROTATE_LEFT = '<',
@@ -50,13 +39,13 @@ typedef enum {
   ENCODER0_RELEASE = 'E',
 } btns_event_t;
 
-typedef encoder_state_t ( *encoder_state_fsm_fptr_t)(int l_pin, int r_pin);
-
 typedef struct {
-  encoder_state_t from;
-  encoder_state_t to;
-  btns_event_t * event;
-} encoder_fsm_transition_t;
+  gpio_num_t l_pin;
+  gpio_num_t r_pin;
+  encoder_state_t state;
+  btns_event_t on_left;
+  btns_event_t on_right;
+} encoder_t;
 
 typedef struct {
   gpio_num_t pin;
@@ -75,7 +64,9 @@ extern "C"
 {
 #endif
 
-void encoders_conf(xQueueHandle evnt_queue);
+void encoders_conf();
+void button_init(button_t * btn, gpio_num_t pin, btns_event_t on_press, btns_event_t on_release);
+void encoder_init(encoder_t * encoder, gpio_num_t l_pin, gpio_num_t r_pin, btns_event_t on_left, btns_event_t on_right);
 
 #ifdef __cplusplus
 }

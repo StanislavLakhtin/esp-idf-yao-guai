@@ -46,12 +46,11 @@ void app_main(void) {
          (chip_info.features & CHIP_FEATURE_EMB_FLASH) ? "embedded" : "external");
 
   xEvents = xEventGroupCreate();
-  xQueueHandle encoder_evnt_queue = xQueueCreate(5, sizeof(uint32_t));
-  if ( xEvents == NULL || encoder_evnt_queue == NULL) {
+  if ( xEvents == NULL) {
     ESP_LOGE(TAG, "insufficient FreeRTOS heap available");
     esp_restart();
   }
-  encoders_conf(encoder_evnt_queue);
+  encoders_conf();
 
   xTaskCreatePinnedToCore(main_connection_task, "main_connection_task", 4096, NULL, WIFI_PROIRITY, NULL, PRO_CPU_NUM);
   xTaskCreatePinnedToCore(ui_task, "display_task", 4096, NULL, UI_PROIRITY, ui_task_handler, APP_CPU_NUM);
