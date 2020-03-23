@@ -66,6 +66,11 @@ static bool read_encoder(lv_indev_drv_t * indev, lv_indev_data_t * data) {
   return false;
 }
 
+#define TRANSITION_RULES 1
+static const ui_transition_t ui_transitions[TRANSITION_RULES] = {
+    {HELLO, SETTINGS, SettingsEvent, construct_settings_screen, do_action_settings_screen, destroy_hello_screen}
+};
+
 void ui_task(void * args ) {
   lv_init();
 
@@ -97,20 +102,25 @@ void ui_task(void * args ) {
 
   esp_register_freertos_tick_hook(lv_tick_task);
   ESP_LOGI( TAG, "Hello world from Yao GUAI [meteo]station.\n" );
-  ui_screen_state_t prev_ui_screen = UNKNOWN;
-  ui_screen = SETTINGS;
+  ui_screen = HELLO;
+  construct_hello_screen(NULL);
+  ui_transition_action_fptr_t do_action = do_action_hello_screen;
+  ui_screen_signal_t result = RepeatMyselfEvent;
   loop {
-    if (ui_screen != prev_ui_screen) {
-      prev_ui_screen = ui_screen;
-      switch (ui_screen) {
-        case SETTINGS:
-          construct_settings_screen();
+    if (do_action != NULL)
+      result = do_action();
+    if (result != RepeatMyselfEvent) {
+      for (int i = 0 ; i < TRANSITION_RULES; i++) {
+        ui_transition_t tr = ui_transitions[i];
+        if (result == tr.signal && ui_screen == tr.from) {
+          if (tr.from != tr.to) {
+            //CALL_IF_NOT_NULL(tr.do_deconstruct, );
+            CALL_IF_NOT_NULL(tr.do_construct, NULL);
+            ui_screen = tr.to;
+          }
+          do_action = tr.do_action;
           break;
-        case SHOW_SCANNED_APS:
-          construct_scanned_aps_screen();
-          break;
-        default:
-          break;
+        }
       }
     }
     vTaskDelay(1);

@@ -8,12 +8,18 @@ void IRAM_ATTR encoder_isr_handler(void *arg) {
   encoder_t *encoder = arg;
   int l_pin = gpio_get_level(encoder->l_pin);
   int r_pin = gpio_get_level(encoder->r_pin);
+  TickType_t tick = xTaskGetTickCountFromISR();
+  if (tick - encoder->last_update > 10) {
+    encoder->last_update = tick;
+    encoder->state = ENCODER_IDLE;
+  }
   switch (encoder->state) {
     case ENCODER_IDLE:
       if (!l_pin && r_pin)
         encoder->state = LEFT_ROTATION_BEGIN;
       if (l_pin && !r_pin)
         encoder->state = RIGHT_ROTATION_BEGIN;
+      encoder->last_update = tick;
       break;
     case LEFT_ROTATION_BEGIN:
       if (!r_pin) {

@@ -6,18 +6,18 @@
 
 static const char * TAG = "settings";
 
-static void group_focus_cb(lv_group_t * group);
 static void wifi_scan_event_cb(lv_obj_t * obj, lv_event_t event);
 static void edit_ap_event_cb(lv_obj_t * obj, lv_event_t event);
+static void group_focus_cb(lv_group_t * group);
 
 static lv_obj_t * setting_win = NULL;
 static lv_obj_t * setting_scanned_aps = NULL;
 static lv_group_t * g = NULL;
 
-void construct_settings_screen(void) {
+void construct_settings_screen(void * arg) {
   if ( setting_win != NULL)
     return; // is already constructed
-  current_display = setting_win;
+  current_screen = setting_win;
   setting_win = lv_win_create(lv_scr_act(), NULL);
   lv_win_set_title(setting_win, "Settings");
   g = lv_group_create();
@@ -41,13 +41,21 @@ void construct_settings_screen(void) {
   _btn = lv_list_add_btn(obj, LV_SYMBOL_DRIVE, "SDCard");
   lv_obj_set_event_cb(_btn, edit_ap_event_cb);
   lv_group_add_obj(g, _btn);
+}
 
+ui_screen_signal_t do_action_settings_screen(void) {
+  return RepeatMyselfEvent;
+}
+
+void destroy_settings_screen(void) {
+  lv_obj_del(setting_win);
+  setting_win = NULL;
 }
 
 void construct_scanned_aps_screen(void) {
   if ( setting_scanned_aps != NULL)
     return; // is already constructed
-  current_display = setting_scanned_aps;
+  current_screen = setting_scanned_aps;
   setting_scanned_aps = lv_win_create(lv_scr_act(), NULL);
   lv_win_set_title(setting_scanned_aps, "List of AP's");
   g = lv_group_create();
@@ -60,8 +68,8 @@ void construct_scanned_aps_screen(void) {
 }
 
 static void group_focus_cb(lv_group_t * group) {
-  lv_obj_t * f = lv_group_get_focused(group);
-  if(f != setting_win) lv_win_focus(setting_win, f, LV_ANIM_ON);
+  lv_obj_t * f_obj = lv_group_get_focused(group);
+  if(f_obj != setting_win) lv_win_focus(setting_win, f_obj, LV_ANIM_ON);
 }
 
 static lv_obj_t * mbox;
@@ -128,7 +136,7 @@ void event_cb(lv_obj_t * obj, lv_event_t event) {
       printf("LV_EVENT_CLICKED\n");
       break;
 
-    /*case LV_EVENT_FOCUSED:
+    case LV_EVENT_FOCUSED:
       printf("LV_EVENT_FOCUSED\n");
       break;
 
@@ -137,6 +145,6 @@ void event_cb(lv_obj_t * obj, lv_event_t event) {
       break;
 
     default:
-      printf("Unknown event 0x%02x (%02d) \n", event, event);*/
+      printf("Unknown event 0x%02x (%02d) \n", event, event);
   }
 }

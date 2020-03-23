@@ -45,6 +45,7 @@ typedef struct {
   encoder_state_t state;
   btns_event_t on_left;
   btns_event_t on_right;
+  TickType_t last_update;
 } encoder_t;
 
 typedef struct {
