@@ -15,7 +15,6 @@ static void group_focus_cb(lv_group_t * group);
 void construct_hello_screen(void * arg) {
   /*Create a screen*/
   screen = lv_obj_create(NULL, NULL);
-  current_screen = screen;
   lv_scr_load(screen);
   lv_obj_t * label = lv_label_create(screen, NULL);
   lv_label_set_text(label, "Yao-GUAI weather station");
@@ -34,7 +33,7 @@ void construct_hello_screen(void * arg) {
 
 static void group_focus_cb(lv_group_t * group) {
   lv_obj_t * f_obj = lv_group_get_focused(group);
-  if(f_obj != current_screen) lv_win_focus(current_screen, f_obj, LV_ANIM_ON);
+  if(f_obj != screen) lv_win_focus(screen, f_obj, LV_ANIM_ON);
 }
 
 typedef enum {
@@ -58,5 +57,5 @@ ui_screen_signal_t do_action_hello_screen(void) {
 }
 
 void destroy_hello_screen(void) {
-  lv_obj_del_async(screen);
+  //lv_obj_del_async(screen);
 }

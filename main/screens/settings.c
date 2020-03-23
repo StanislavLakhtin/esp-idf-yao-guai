@@ -17,7 +17,6 @@ static lv_group_t * g = NULL;
 void construct_settings_screen(void * arg) {
   if ( setting_win != NULL)
     return; // is already constructed
-  current_screen = setting_win;
   setting_win = lv_win_create(lv_scr_act(), NULL);
   lv_win_set_title(setting_win, "Settings");
   g = lv_group_create();
@@ -55,7 +54,6 @@ void destroy_settings_screen(void) {
 void construct_scanned_aps_screen(void) {
   if ( setting_scanned_aps != NULL)
     return; // is already constructed
-  current_screen = setting_scanned_aps;
   setting_scanned_aps = lv_win_create(lv_scr_act(), NULL);
   lv_win_set_title(setting_scanned_aps, "List of AP's");
   g = lv_group_create();

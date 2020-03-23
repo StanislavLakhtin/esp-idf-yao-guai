@@ -36,7 +36,6 @@ typedef struct {
   ui_deconstruct_ui_fptr_t do_deconstruct;
 } ui_transition_t;
 
-lv_obj_t * current_screen;
 ui_screen_state_t ui_screen;
 
 lv_indev_drv_t encoder_drv;

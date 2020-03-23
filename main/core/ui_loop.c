@@ -114,8 +114,8 @@ void ui_task(void * args ) {
         ui_transition_t tr = ui_transitions[i];
         if (result == tr.signal && ui_screen == tr.from) {
           if (tr.from != tr.to) {
-            //CALL_IF_NOT_NULL(tr.do_deconstruct, );
             CALL_IF_NOT_NULL(tr.do_construct, NULL);
+            CALL_IF_NOT_NULL(tr.do_deconstruct, );
             ui_screen = tr.to;
           }
           do_action = tr.do_action;
