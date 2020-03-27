@@ -10,13 +10,16 @@ static void wifi_scan_event_cb(lv_obj_t * obj, lv_event_t event);
 static void edit_ap_event_cb(lv_obj_t * obj, lv_event_t event);
 static void group_focus_cb(lv_group_t * group);
 
+static lv_obj_t * screen = NULL;
 static lv_obj_t * setting_win = NULL;
 static lv_obj_t * setting_scanned_aps = NULL;
 static lv_group_t * g = NULL;
 
 void construct_settings_screen(void * arg) {
-  if ( setting_win != NULL)
+  if ( screen != NULL)
     return; // is already constructed
+  screen = lv_obj_create(NULL, NULL);
+  lv_scr_load(screen);
   setting_win = lv_win_create(lv_scr_act(), NULL);
   lv_win_set_title(setting_win, "Settings");
   g = lv_group_create();
