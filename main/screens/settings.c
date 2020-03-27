@@ -50,8 +50,8 @@ ui_screen_signal_t do_action_settings_screen(void) {
 }
 
 void destroy_settings_screen(void) {
-  lv_obj_del(setting_win);
-  setting_win = NULL;
+  lv_obj_del(screen);
+  screen = NULL;
 }
 
 void construct_scanned_aps_screen(void) {
