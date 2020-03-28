@@ -14,10 +14,10 @@
 
 // BTNS pins
 
-#define GPIO_INPUT_ENCODER_0    35
-#define GPIO_INPUT_ENCODER_1    33
+#define GPIO_INPUT_INT_PIN    35
+#define GPIO_INPUT_DIR_PIN    33
 #define GPIO_INPUT_ENCODER_BTN  34
-#define GPIO_INPUT_PIN_SEL      ((1ULL<<GPIO_INPUT_ENCODER_0) | (1ULL<<GPIO_INPUT_ENCODER_1) | (1ULL<<GPIO_INPUT_ENCODER_BTN))
+#define GPIO_INPUT_PIN_SEL      ((1ULL<<GPIO_INPUT_INT_PIN) | (1ULL<<GPIO_INPUT_DIR_PIN) | (1ULL<<GPIO_INPUT_ENCODER_BTN))
 
 #define ESP_INTR_FLAG_DEFAULT 0
 
@@ -27,12 +27,6 @@ typedef enum {
 } button_state_t;
 
 typedef enum {
-  ENCODER_IDLE = 0,
-  LEFT_ROTATION_BEGIN = 1,
-  RIGHT_ROTATION_BEGIN = 2,
-} encoder_state_t;
-
-typedef enum {
   ENCODER0_ROTATE_LEFT = '<',
   ENCODER0_ROTATE_RIGHT = '>',
   ENCODER0_PRESS = 'e',
@@ -40,9 +34,8 @@ typedef enum {
 } btns_event_t;
 
 typedef struct {
-  gpio_num_t l_pin;
-  gpio_num_t r_pin;
-  encoder_state_t state;
+  gpio_num_t dir_pin;
+  gpio_num_t int_pin;
   btns_event_t on_left;
   btns_event_t on_right;
   TickType_t last_update;
@@ -67,7 +60,7 @@ extern "C"
 
 void encoders_conf();
 void button_init(button_t * btn, gpio_num_t pin, btns_event_t on_press, btns_event_t on_release);
-void encoder_init(encoder_t * encoder, gpio_num_t l_pin, gpio_num_t r_pin, btns_event_t on_left, btns_event_t on_right);
+void encoder_init(encoder_t * encoder, gpio_num_t dir_pin, gpio_num_t int_pin, btns_event_t on_left, btns_event_t on_right);
 
 #ifdef __cplusplus
 }
