@@ -68,7 +68,7 @@ static bool read_encoder(lv_indev_drv_t * indev, lv_indev_data_t * data) {
 static const ui_transition_t ui_transitions[TRANSITION_RULES] = {
     {HELLO, SETTINGS, SettingsEvent, construct_settings_screen, do_action_settings_screen, destroy_hello_screen},
     {SETTINGS, HELLO, CallHomeScreenEvent, construct_hello_screen, do_action_hello_screen, destroy_settings_screen},
-    {SETTINGS, HELLO, ShowNearestWiFiAPEvent, construct_scanned_aps_screen, do_action_scanned_aps_screen, destroy_settings_screen}
+    {SETTINGS, SHOW_SCANNED_APS, ShowNearestWiFiAPEvent, construct_scanned_aps_screen, do_action_scanned_aps_screen, destroy_settings_screen}
 };
 
 void ui_task(void * args ) {
@@ -105,14 +105,14 @@ void ui_task(void * args ) {
   ui_screen = HELLO;
   construct_hello_screen(NULL);
   ui_transition_action_fptr_t do_action = do_action_hello_screen;
-  ui_screen_signal_t result = RepeatMyselfEvent;
+  ui_screen_signal_t signal = RepeatMyselfEvent;
   loop {
     if (do_action != NULL)
-      result = do_action();
-    if (result != RepeatMyselfEvent) {
+      signal = do_action();
+    if (signal != RepeatMyselfEvent) {
       for (int i = 0 ; i < TRANSITION_RULES; i++) {
         ui_transition_t tr = ui_transitions[i];
-        if (result == tr.signal && ui_screen == tr.from) {
+        if (signal == tr.signal && ui_screen == tr.from) {
           if (tr.from != tr.to) {
             CALL_IF_NOT_NULL(tr.do_deconstruct, );
             CALL_IF_NOT_NULL(tr.do_construct, NULL);

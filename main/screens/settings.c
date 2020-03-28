@@ -57,6 +57,7 @@ ui_screen_signal_t do_action_settings_screen(void) {
     case ReturnToHOMEScreen:
       return CallHomeScreenEvent;
     case ShowNearestWiFiScreen:
+      ESP_LOGI(TAG, "Show nearest AP's");
       return ShowNearestWiFiAPEvent;
     default:
       return RepeatMyselfEvent;
