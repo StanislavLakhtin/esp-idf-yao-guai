@@ -64,9 +64,11 @@ static bool read_encoder(lv_indev_drv_t * indev, lv_indev_data_t * data) {
   return false;
 }
 
-#define TRANSITION_RULES 1
+#define TRANSITION_RULES 3
 static const ui_transition_t ui_transitions[TRANSITION_RULES] = {
-    {HELLO, SETTINGS, SettingsEvent, construct_settings_screen, do_action_settings_screen, destroy_hello_screen}
+    {HELLO, SETTINGS, SettingsEvent, construct_settings_screen, do_action_settings_screen, destroy_hello_screen},
+    {SETTINGS, HELLO, CallHomeScreenEvent, construct_hello_screen, do_action_hello_screen, destroy_settings_screen},
+    {SETTINGS, HELLO, ShowNearestWiFiAPEvent, construct_scanned_aps_screen, do_action_scanned_aps_screen, destroy_settings_screen}
 };
 
 void ui_task(void * args ) {

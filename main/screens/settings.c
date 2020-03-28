@@ -13,7 +13,6 @@ static void group_focus_cb(lv_group_t * group);
 
 static lv_obj_t * screen = NULL;
 static lv_obj_t * setting_win = NULL;
-static lv_obj_t * setting_scanned_aps = NULL;
 static lv_group_t * g = NULL;
 
 void construct_settings_screen(void * arg) {
@@ -32,8 +31,8 @@ void construct_settings_screen(void * arg) {
   /* Add EXIT control button to the header */
   lv_obj_t * _btn, *obj;
 
-  _btn = lv_win_add_btn(setting_win, LV_SYMBOL_CLOSE);
-  lv_obj_set_event_cb(_btn, event_cb);
+  _btn = lv_win_add_btn(setting_win, LV_SYMBOL_HOME);
+  lv_obj_set_event_cb(_btn, close_event_cb);
   lv_group_add_obj(g, _btn);
 
   obj = lv_list_create(setting_win, NULL);
@@ -43,38 +42,30 @@ void construct_settings_screen(void * arg) {
   _btn = lv_list_add_btn(obj, LV_SYMBOL_WIFI, "Scan WiFi");
   lv_obj_set_height(_btn, 32);
   lv_obj_set_event_cb(_btn, wifi_scan_event_cb);
-  //lv_group_add_obj(g, _btn);
 
   _btn = lv_list_add_btn(obj, LV_SYMBOL_EDIT, "Edit known APs");
   lv_obj_set_event_cb(_btn, edit_ap_event_cb);
-  //lv_group_add_obj(g, _btn);
 
   _btn = lv_list_add_btn(obj, LV_SYMBOL_REFRESH, "1-wire scan");
   lv_obj_set_event_cb(_btn, scan_1wire_event_cb);
-  //lv_group_add_obj(g, _btn);
+
+  int_screen_event = DoNothing;
 }
 
 ui_screen_signal_t do_action_settings_screen(void) {
-  return RepeatMyselfEvent;
+  switch (int_screen_event) {
+    case ReturnToHOMEScreen:
+      return CallHomeScreenEvent;
+    case ShowNearestWiFiScreen:
+      return ShowNearestWiFiAPEvent;
+    default:
+      return RepeatMyselfEvent;
+  }
 }
 
 void destroy_settings_screen(void) {
   lv_obj_del(screen);
   screen = NULL;
-}
-
-void construct_scanned_aps_screen(void) {
-  if ( setting_scanned_aps != NULL)
-    return; // is already constructed
-  setting_scanned_aps = lv_win_create(lv_scr_act(), NULL);
-  lv_win_set_title(setting_scanned_aps, "List of AP's");
-  g = lv_group_create();
-  lv_group_set_focus_cb(g, group_focus_cb);
-  /* Add EXIT control button to the header */
-  lv_obj_t * _btn = lv_win_add_btn(setting_scanned_aps, LV_SYMBOL_CLOSE);
-  lv_obj_set_event_cb(_btn, event_cb);
-  lv_group_add_obj(g, _btn);
-  lv_indev_set_group(encoder_indev, g);
 }
 
 static void group_focus_cb(lv_group_t * group) {
@@ -104,6 +95,7 @@ void scan_wifi(lv_task_t * task) {
   lv_anim_set_values(&a, LV_OPA_TRANSP, LV_OPA_COVER);
   lv_anim_set_exec_cb(&a, obj, (lv_anim_exec_xcb_t) lv_obj_set_opa_scale);
   lv_anim_create(&a);
+  int_screen_event = ShowNearestWiFiScreen;
 }
 
 static void wifi_scan_event_cb(lv_obj_t * obj, lv_event_t event) {
@@ -127,37 +119,11 @@ static void scan_1wire_event_cb(lv_obj_t * obj, lv_event_t event) {
   ESP_LOGI(TAG, "scan_1wire_event_cb");
 }
 
-void event_cb(lv_obj_t * obj, lv_event_t event) {
-  switch (event) {
-    case LV_EVENT_PRESSED:
-      printf("LV_EVENT_PRESSED\n");
-      break;
-
-    case LV_EVENT_SHORT_CLICKED:
-      printf("LV_EVENT_SHORT_CLICKED\n");
-      break;
-
-    case LV_EVENT_LONG_PRESSED:
-      printf("LV_EVENT_LONG_PRESSED\n");
-      break;
-
-    case LV_EVENT_RELEASED:
-      printf("LV_EVENT_RELEASED\n");
-      break;
-
-    case LV_EVENT_CLICKED:
-      printf("LV_EVENT_CLICKED\n");
-      break;
-
-    case LV_EVENT_FOCUSED:
-      printf("LV_EVENT_FOCUSED\n");
-      break;
-
-    case LV_EVENT_DEFOCUSED:
-      printf("LV_EVENT_DEFOCUSED\n");
-      break;
-
-    default:
-      printf("Unknown event 0x%02x (%02d) \n", event, event);
+void close_event_cb(lv_obj_t * obj, lv_event_t event) {
+  if (event == LV_EVENT_PRESSED) {
+    ESP_LOGI(TAG, "LV_EVENT_PRESSED");
+    int_screen_event = ReturnToHOMEScreen;
+  } else {
+    ESP_LOGI(TAG, "LV_EVENT %d", event);
   }
 }

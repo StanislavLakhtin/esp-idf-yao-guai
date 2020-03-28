@@ -19,6 +19,8 @@ typedef enum {
 typedef enum {
   RepeatMyselfEvent,
   SettingsEvent,
+  CallHomeScreenEvent,
+  ShowNearestWiFiAPEvent,
   ScanWifiEvent,
   ConnectToApEvent
 } ui_screen_signal_t;
@@ -54,6 +56,10 @@ void destroy_hello_screen(void);
 void construct_settings_screen(void * arg);
 ui_screen_signal_t do_action_settings_screen(void);
 void destroy_settings_screen(void);
+
+void construct_scanned_aps_screen(void *arg);
+ui_screen_signal_t do_action_scanned_aps_screen(void);
+void destroy_scanned_aps_screen(void);
 
 #ifdef __cplusplus
 }
