@@ -22,8 +22,6 @@
 #include "esp_freertos_hooks.h"
 #include "lvgl_driver.h"
 
-#include "screens.h"
-
 /**********************
  *  STATIC VARIABLES
  **********************/

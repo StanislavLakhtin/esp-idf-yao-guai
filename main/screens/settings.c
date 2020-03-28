@@ -8,6 +8,7 @@ static const char * TAG = "settings";
 
 static void wifi_scan_event_cb(lv_obj_t * obj, lv_event_t event);
 static void edit_ap_event_cb(lv_obj_t * obj, lv_event_t event);
+static void scan_1wire_event_cb(lv_obj_t * obj, lv_event_t event);
 static void group_focus_cb(lv_group_t * group);
 
 static lv_obj_t * screen = NULL;
@@ -17,32 +18,40 @@ static lv_group_t * g = NULL;
 
 void construct_settings_screen(void * arg) {
   if ( screen != NULL)
-    return; // is already constructed
+    return; // it is already constructed
+
   screen = lv_obj_create(NULL, NULL);
   lv_scr_load(screen);
   setting_win = lv_win_create(lv_scr_act(), NULL);
   lv_win_set_title(setting_win, "Settings");
+
   g = lv_group_create();
   lv_group_set_focus_cb(g, group_focus_cb);
+  lv_indev_set_group(encoder_indev, g);
+
   /* Add EXIT control button to the header */
-  lv_obj_t * _btn = lv_win_add_btn(setting_win, LV_SYMBOL_CLOSE);
+  lv_obj_t * _btn, *obj;
+
+  _btn = lv_win_add_btn(setting_win, LV_SYMBOL_CLOSE);
   lv_obj_set_event_cb(_btn, event_cb);
   lv_group_add_obj(g, _btn);
-  lv_indev_set_group(encoder_indev, g);
-  lv_obj_t * obj;
+
   obj = lv_list_create(setting_win, NULL);
   lv_group_add_obj(g, obj);
   lv_obj_align(obj, setting_win, LV_ALIGN_CENTER, 0, 0);
+
   _btn = lv_list_add_btn(obj, LV_SYMBOL_WIFI, "Scan WiFi");
   lv_obj_set_height(_btn, 32);
   lv_obj_set_event_cb(_btn, wifi_scan_event_cb);
-  lv_group_add_obj(g, _btn);
+  //lv_group_add_obj(g, _btn);
+
   _btn = lv_list_add_btn(obj, LV_SYMBOL_EDIT, "Edit known APs");
   lv_obj_set_event_cb(_btn, edit_ap_event_cb);
-  lv_group_add_obj(g, _btn);
-  _btn = lv_list_add_btn(obj, LV_SYMBOL_DRIVE, "SDCard");
-  lv_obj_set_event_cb(_btn, edit_ap_event_cb);
-  lv_group_add_obj(g, _btn);
+  //lv_group_add_obj(g, _btn);
+
+  _btn = lv_list_add_btn(obj, LV_SYMBOL_REFRESH, "1-wire scan");
+  lv_obj_set_event_cb(_btn, scan_1wire_event_cb);
+  //lv_group_add_obj(g, _btn);
 }
 
 ui_screen_signal_t do_action_settings_screen(void) {
@@ -112,7 +121,10 @@ static void wifi_scan_event_cb(lv_obj_t * obj, lv_event_t event) {
 
 static void edit_ap_event_cb(lv_obj_t * obj, lv_event_t event) {
   ESP_LOGI(TAG, "edit_ap_event_cb");
-  //event_cb(obj, event);
+}
+
+static void scan_1wire_event_cb(lv_obj_t * obj, lv_event_t event) {
+  ESP_LOGI(TAG, "scan_1wire_event_cb");
 }
 
 void event_cb(lv_obj_t * obj, lv_event_t event) {

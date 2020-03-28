@@ -6,8 +6,7 @@
 
 void IRAM_ATTR encoder_isr_handler(void *arg) {
   encoder_t *encoder = arg;
-  int direction = gpio_get_level(encoder->dir_pin);
-  btns_event_t event = (direction) ? encoder->on_right : encoder->on_left;
+  btns_event_t event = (gpio_get_level(encoder->dir_pin)) ? encoder->on_right : encoder->on_left;
   xQueueSendFromISR(event_queue, &event, NULL);
 }
 

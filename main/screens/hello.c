@@ -57,5 +57,6 @@ ui_screen_signal_t do_action_hello_screen(void) {
 }
 
 void destroy_hello_screen(void) {
-  //lv_obj_del_async(screen);
+  lv_obj_del(screen);
+  screen = NULL;
 }
