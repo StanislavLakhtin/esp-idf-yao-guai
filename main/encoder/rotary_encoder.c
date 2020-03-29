@@ -38,32 +38,43 @@ button_t encoder_btn;
 encoder_t encoder0;
 
 void encoders_conf() {
-  event_queue = xQueueCreate(5, sizeof(btns_event_t));
-
-  gpio_config_t gpio_conf;
-  gpio_conf.intr_type = GPIO_INTR_POSEDGE;
-  gpio_conf.pin_bit_mask = GPIO_INPUT_PIN_SEL;
-  gpio_conf.mode = GPIO_MODE_INPUT;
-  gpio_conf.pull_up_en = 1;
-  gpio_config(&gpio_conf);
   gpio_install_isr_service(ESP_INTR_FLAG_DEFAULT);
+
+  event_queue = xQueueCreate(5, sizeof(btns_event_t));
 
   button_init(&encoder_btn, GPIO_INPUT_ENCODER_BTN, ENCODER0_PRESS, ENCODER0_RELEASE);
   encoder_init(&encoder0, GPIO_INPUT_DIR_PIN, GPIO_INPUT_INT_PIN, ENCODER0_ROTATE_LEFT, ENCODER0_ROTATE_RIGHT);
+
 }
 
 void button_init(button_t * btn, gpio_num_t pin, btns_event_t on_press, btns_event_t on_release) {
+  gpio_config_t gpio_conf;
+  gpio_conf.pin_bit_mask = pin;
+  gpio_conf.mode = GPIO_MODE_INPUT;
+  gpio_conf.pull_up_en = 1;
+  gpio_conf.intr_type = GPIO_INTR_ANYEDGE;
+  gpio_config(&gpio_conf);
+
   btn->pin = pin;
   btn->state = BTN_IDLE;
   btn->on_press_event = on_press;
   btn->on_release_event = on_release;
+
   gpio_isr_handler_add(pin, buttons_isr_handler, btn);
 }
 
 void encoder_init(encoder_t * encoder, gpio_num_t dir_pin, gpio_num_t int_pin, btns_event_t on_left, btns_event_t on_right) {
+  gpio_config_t gpio_conf;
+  gpio_conf.pin_bit_mask = (1ULL<<dir_pin) | (1ULL<<int_pin);
+  gpio_conf.mode = GPIO_MODE_INPUT;
+  gpio_conf.intr_type = GPIO_INTR_POSEDGE;
+  gpio_conf.pull_up_en = 1;
+  gpio_config(&gpio_conf);
+
   encoder->dir_pin = dir_pin;
   encoder->int_pin = int_pin;
   encoder->on_left = on_left;
   encoder->on_right = on_right;
+
   gpio_isr_handler_add(encoder->int_pin, encoder_isr_handler, encoder);
 }
