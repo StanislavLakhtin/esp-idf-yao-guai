@@ -90,12 +90,12 @@ void scan_wifi(lv_task_t * task) {
   mbox = lv_mbox_create(lv_scr_act(), NULL);
   lv_mbox_set_text(mbox, "Scanning nearest WiFi AP's");
   lv_obj_align(mbox, NULL, LV_ALIGN_CENTER, 0, 0);
-  lv_anim_t a;
+  /*lv_anim_t a;
   lv_anim_init(&a);
   lv_anim_set_time(&a, 500, 0);
   lv_anim_set_values(&a, LV_OPA_TRANSP, LV_OPA_COVER);
   lv_anim_set_exec_cb(&a, obj, (lv_anim_exec_xcb_t) lv_obj_set_opa_scale);
-  lv_anim_create(&a);
+  lv_anim_create(&a);*/
   int_screen_event = ShowNearestWiFiScreen;
 }
 

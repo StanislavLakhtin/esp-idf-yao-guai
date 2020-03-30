@@ -33,6 +33,6 @@ void main_connection_task(void * arg) {
     }
     xEventGroupSetBits(xEvents, WIFI_CHANGE_STATE);
     cur_state = lookup_transitions(cur_state, rc);
-    vTaskDelay(1000 / portTICK_PERIOD_MS);  // make
+    vTaskDelay(2000 / portTICK_PERIOD_MS);  // make
   };
 }
