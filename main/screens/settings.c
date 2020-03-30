@@ -53,15 +53,20 @@ void construct_settings_screen(void * arg) {
 }
 
 ui_screen_signal_t do_action_settings_screen(void) {
+  ui_screen_signal_t result = RepeatMyselfEvent;
   switch (int_screen_event) {
     case ReturnToHOMEScreen:
-      return CallHomeScreenEvent;
+      result = CallHomeScreenEvent;
+      break;
     case ShowNearestWiFiScreen:
       ESP_LOGI(TAG, "Show nearest AP's");
-      return ShowNearestWiFiAPEvent;
+      result = ShowNearestWiFiAPEvent;
+      break;
     default:
-      return RepeatMyselfEvent;
+      result = RepeatMyselfEvent;
+      break;
   }
+  return result;
 }
 
 void destroy_settings_screen(void) {
