@@ -13,7 +13,6 @@ typedef enum {
   HELLO,
   SETTINGS,
   SHOW_SCANNED_APS,
-  SHOW_
 } ui_screen_state_t;
 
 typedef enum {

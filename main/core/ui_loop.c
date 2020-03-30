@@ -110,7 +110,7 @@ void ui_task(void * args ) {
     if (do_action != NULL)
       signal = do_action();
     if (signal != RepeatMyselfEvent) {
-      for (int i = 0 ; i < TRANSITION_RULES; i++) {
+      for (int i = 0; i < TRANSITION_RULES; i++) {
         ui_transition_t tr = ui_transitions[i];
         if (signal == tr.signal && ui_screen == tr.from) {
           if (tr.from != tr.to) {
