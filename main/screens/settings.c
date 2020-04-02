@@ -81,39 +81,10 @@ static void group_focus_cb(lv_group_t * group) {
 
 static lv_obj_t * mbox;
 
-void scan_wifi(lv_task_t * task) {
-  xEventGroupSetBits(xEvents, WIFI_SCAN);
-  static lv_style_t modal_style;
-  lv_style_copy(&modal_style, &lv_style_plain_color);
-  modal_style.body.main_color = modal_style.body.grad_color = LV_COLOR_BLACK;
-  modal_style.body.opa = LV_OPA_80;
-  lv_obj_t * obj = lv_obj_create(lv_scr_act(), NULL);
-  lv_obj_set_style(obj, &modal_style);
-  lv_obj_set_pos(obj, 0, 0);
-  lv_obj_set_size(obj, LV_HOR_RES, LV_VER_RES);
-  lv_obj_set_opa_scale_enable(obj, true); /* Enable opacity scaling for the animation */
-  mbox = lv_mbox_create(lv_scr_act(), NULL);
-  lv_mbox_set_text(mbox, "Scanning nearest WiFi AP's");
-  lv_obj_align(mbox, NULL, LV_ALIGN_CENTER, 0, 0);
-  /*lv_anim_t a;
-  lv_anim_init(&a);
-  lv_anim_set_time(&a, 500, 0);
-  lv_anim_set_values(&a, LV_OPA_TRANSP, LV_OPA_COVER);
-  lv_anim_set_exec_cb(&a, obj, (lv_anim_exec_xcb_t) lv_obj_set_opa_scale);
-  lv_anim_create(&a);*/
-  int_screen_event = ShowNearestWiFiScreen;
-}
-
 static void wifi_scan_event_cb(lv_obj_t * obj, lv_event_t event) {
   ESP_LOGI(TAG, "wifi_scan_event_cb");
   if (event == LV_EVENT_CLICKED) {
-    lv_task_t * task = lv_task_create(scan_wifi, 500, LV_TASK_PRIO_MID, NULL);
-    lv_task_once(task);
-    EventBits_t currentEvents;
-    do {
-      currentEvents = xEventGroupGetBits(xEvents);
-    } while (currentEvents & WIFI_SCAN);
-    ui_screen = SHOW_SCANNED_APS;
+    int_screen_event = ShowNearestWiFiScreen;
   }
 }
 

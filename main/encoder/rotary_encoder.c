@@ -44,7 +44,6 @@ void encoders_conf() {
 
   button_init(&encoder_btn, GPIO_INPUT_ENCODER_BTN, ENCODER0_PRESS, ENCODER0_RELEASE);
   encoder_init(&encoder0, GPIO_INPUT_DIR_PIN, GPIO_INPUT_INT_PIN, ENCODER0_ROTATE_LEFT, ENCODER0_ROTATE_RIGHT);
-
 }
 
 void button_init(button_t * btn, gpio_num_t pin, btns_event_t on_press, btns_event_t on_release) {

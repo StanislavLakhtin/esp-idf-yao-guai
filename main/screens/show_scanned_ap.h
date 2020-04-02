@@ -8,11 +8,13 @@
 #include "yao-guai.h"
 
 typedef enum {
-  DoNothing,
-  ConnectToChosenApScreen
-} show_scanned_ap_event_t;
+  DoNothingSignal,
+  ReturnToHomeSignal,
+  ReturnToSettingsSignal,
+  ConnectToChosenApScreenSignal
+} show_scanned_ap_signal_t;
 
-show_scanned_ap_event_t int_show_scanned_ap_event;
+show_scanned_ap_signal_t int_show_scanned_ap_signal;
 
 #ifdef __cplusplus
 extern "C"
