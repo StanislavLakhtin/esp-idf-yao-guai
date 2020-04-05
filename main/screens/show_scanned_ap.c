@@ -53,6 +53,7 @@ void construct_scanned_aps_screen(void *arg) {
   lv_obj_set_event_cb(_btn, call_settings_event_cb);
   lv_group_add_obj(g, _btn);
 
+
 }
 
 static void group_focus_cb(lv_group_t *group) {

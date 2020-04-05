@@ -26,12 +26,14 @@ void app_main(void) {
     ret = nvs_flash_init();
   }
   ESP_ERROR_CHECK( ret );
+  load_conf(stored_aps, &stored_aps_count);
+  // Initialize NetIF
   ESP_ERROR_CHECK(esp_netif_init());
   ESP_ERROR_CHECK(esp_event_loop_create_default());
-
+  // Initialize 1-wire bus
   ESP_ERROR_CHECK(ow_uart_driver_init());
 
-  /* Print chip information */
+  // Print chip information
   esp_chip_info_t chip_info;
   esp_chip_info(&chip_info);
   printf("This is %s chip with %d CPU cores, WiFi%s%s, ",
@@ -41,7 +43,6 @@ void app_main(void) {
          (chip_info.features & CHIP_FEATURE_BLE) ? "/BLE" : "");
 
   printf("silicon revision %d, ", chip_info.revision);
-
   printf("%dMB %s flash\n", spi_flash_get_chip_size() / (1024 * 1024),
          (chip_info.features & CHIP_FEATURE_EMB_FLASH) ? "embedded" : "external");
 

@@ -11,6 +11,8 @@
 #include "freertos/task.h"
 #include "freertos/semphr.h"
 
+#include "nvs_flash.h"
+#include "nvs.h"
 #include "esp_log.h"
 #include "esp_netif.h"
 #include "esp_event.h"
@@ -39,14 +41,18 @@ extern const uint8_t mqtt_eclipse_org_pem_end[]   asm("_binary_mqtt_eclipse_org_
 
 EventGroupHandle_t xEvents;
 
-typedef struct stat filestat;
+#define ESP_SSID_MAX_LENGTH 33
+#define ESP_SSID_PASSWORD_MAX_LENGTH 65
 
-#define LIST_STORED_SSIDs_SIZE 10
 typedef struct {
-  uint8_t ssid[32];
-  uint8_t password[64];
+  char ssid[ESP_SSID_MAX_LENGTH];
+  char password[ESP_SSID_PASSWORD_MAX_LENGTH];
   uint8_t priority;
 } stored_ssid_conf_t;
+
+stored_ssid_conf_t * stored_aps;
+uint8_t stored_aps_count;
+char conf_version[33];
 
 TaskHandle_t * ui_task_handler;
 
@@ -59,6 +65,12 @@ extern "C"
 void ow_periodically_scan_task(void *arg);
 void main_connection_task(void *arg);
 void ui_task(void *arg);
+
+
+// --------------- Tools ---------------
+esp_err_t load_conf(stored_ssid_conf_t * conf, uint8_t * count);
+esp_err_t store_ap_to_conf(stored_ssid_conf_t * new_ap_ssid);
+esp_err_t store_conf();
 
 #ifdef __cplusplus
 }
