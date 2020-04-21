@@ -70,6 +70,7 @@ ui_screen_signal_t do_action_settings_screen(void) {
 }
 
 void destroy_settings_screen(void) {
+  lv_group_del(g);
   lv_obj_del(screen);
   screen = NULL;
 }

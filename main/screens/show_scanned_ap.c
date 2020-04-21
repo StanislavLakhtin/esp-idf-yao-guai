@@ -53,7 +53,17 @@ void construct_scanned_aps_screen(void *arg) {
   lv_obj_set_event_cb(_btn, call_settings_event_cb);
   lv_group_add_obj(g, _btn);
 
+  lv_obj_t *lst = NULL;
+  lst = lv_list_create(obj, NULL);
+  //lv_obj_align(lst, obj, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 0);
 
+  for (int i = 0; i < ap_cnt; i++) {
+    wifi_ap_record_t *ap = &ap_info[i];
+    const char *txt = (const char *) ap->ssid;
+    ESP_LOGI(TAG, "add wifi button '%s'", txt);
+    lv_list_add_btn(lst, LV_SYMBOL_WIFI, txt);
+  }
+  lv_group_add_obj(g, lst);
 }
 
 static void group_focus_cb(lv_group_t *group) {
@@ -66,20 +76,21 @@ ui_screen_signal_t do_action_scanned_aps_screen(void) {
 }
 
 static void call_home_event_cb(lv_obj_t * obj, lv_event_t event) {
-  ESP_LOGI(TAG, "call_home_event_cb");
   if (event == LV_EVENT_CLICKED) {
+    ESP_LOGI(TAG, "clicked call_home_event_cb");
     int_show_scanned_ap_signal = ReturnToHomeSignal;
   }
 }
 
 static void call_settings_event_cb(lv_obj_t * obj, lv_event_t event) {
-  ESP_LOGI(TAG, "call_settings_event_cb");
   if (event == LV_EVENT_CLICKED) {
+    ESP_LOGI(TAG, "clicked call_settings_event_cb");
     int_show_scanned_ap_signal = ReturnToSettingsSignal;
   }
 }
 
 void destroy_scanned_aps_screen(void) {
+  lv_group_del(g);
   lv_obj_del(screen);
   screen = NULL;
 }

@@ -64,6 +64,7 @@ ui_screen_signal_t do_action_hello_screen(void) {
 }
 
 void destroy_hello_screen(void) {
+  lv_group_del(g);
   lv_obj_del(screen);
   screen = NULL;
 }
