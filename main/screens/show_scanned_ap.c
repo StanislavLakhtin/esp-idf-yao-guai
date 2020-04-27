@@ -12,6 +12,7 @@ static lv_group_t *g = NULL;
 static void group_focus_cb(lv_group_t *group);
 static void call_home_event_cb(lv_obj_t * obj, lv_event_t event);
 static void call_settings_event_cb(lv_obj_t * obj, lv_event_t event);
+static void call_ap_select_event_cb(lv_obj_t * obj, lv_event_t event);
 
 void construct_scanned_aps_screen(void *arg) {
   lv_obj_t *obj = NULL;
@@ -61,7 +62,8 @@ void construct_scanned_aps_screen(void *arg) {
     wifi_ap_record_t *ap = &ap_info[i];
     const char *txt = (const char *) ap->ssid;
     ESP_LOGI(TAG, "add wifi button '%s'", txt);
-    lv_list_add_btn(lst, LV_SYMBOL_WIFI, txt);
+    _btn = lv_list_add_btn(lst, LV_SYMBOL_WIFI, txt);
+    lv_obj_set_event_cb(_btn, call_ap_select_event_cb);
   }
   lv_group_add_obj(g, lst);
 }
@@ -86,6 +88,13 @@ static void call_settings_event_cb(lv_obj_t * obj, lv_event_t event) {
   if (event == LV_EVENT_CLICKED) {
     ESP_LOGI(TAG, "clicked call_settings_event_cb");
     int_show_scanned_ap_signal = ReturnToSettingsSignal;
+  }
+}
+
+static void call_ap_select_event_cb(lv_obj_t * obj, lv_event_t event) {
+  if (event == LV_EVENT_CLICKED) {
+    ESP_LOGI(TAG, "Try to connect to the %s AP", lv_list_get_btn_text(obj));
+    int_show_scanned_ap_signal = ConnectToChosenApScreenSignal;
   }
 }
 
