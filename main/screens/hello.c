@@ -10,7 +10,6 @@ static lv_group_t * g;
 static const char * TAG = "Hello Screen";
 
 static void call_settings_event_cb(lv_obj_t * obj, lv_event_t event);
-static void group_focus_cb(lv_group_t * group);
 
 typedef enum {
   DoNothing,
@@ -33,7 +32,6 @@ void construct_hello_screen(void * arg) {
 
   g = lv_group_create();
   lv_indev_set_group(encoder_indev, g);
-  lv_group_set_focus_cb(g, group_focus_cb);
 
   lv_obj_t * _btn = lv_btn_create(screen, NULL);
   lv_obj_set_event_cb(_btn, call_settings_event_cb);
@@ -43,11 +41,6 @@ void construct_hello_screen(void * arg) {
   lv_group_add_obj(g, _btn);
 
   int_event = DoNothing;
-}
-
-static void group_focus_cb(lv_group_t * group) {
-  //lv_obj_t * f_obj = lv_group_get_focused(group);
-  //if(f_obj != screen) lv_win_focus(screen, f_obj, LV_ANIM_ON);
 }
 
 static void call_settings_event_cb(lv_obj_t * obj, lv_event_t event) {

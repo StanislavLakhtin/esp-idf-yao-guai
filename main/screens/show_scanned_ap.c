@@ -56,7 +56,6 @@ void construct_scanned_aps_screen(void *arg) {
 
   lv_obj_t *lst = NULL;
   lst = lv_list_create(obj, NULL);
-  //lv_obj_align(lst, obj, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 0);
 
   for (int i = 0; i < ap_cnt; i++) {
     wifi_ap_record_t *ap = &ap_info[i];

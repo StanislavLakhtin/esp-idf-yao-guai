@@ -25,7 +25,6 @@ void construct_settings_screen(void * arg) {
   lv_win_set_title(setting_win, "Settings");
 
   g = lv_group_create();
-  lv_group_set_focus_cb(g, group_focus_cb);
   lv_indev_set_group(encoder_indev, g);
 
   /* Add EXIT control button to the header */
